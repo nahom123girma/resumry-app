@@ -8,7 +8,7 @@ compatibility_date = "2024-11-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "resumry"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "eea901cd-109f-459b-8df9-5ab3392acbd1"
 
 # --- Non-secret vars (safe to commit) --------------------------------------
 [vars]
