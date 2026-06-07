@@ -1,0 +1,15 @@
+{
+  "name": "resumry",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Resumry AI — Cloudflare Pages + Functions + D1",
+  "scripts": {
+    "dev": "wrangler pages dev public --d1=DB --local",
+    "db:init:local": "wrangler d1 execute resumry --local --file=./schema/0001_init.sql",
+    "db:init": "wrangler d1 execute resumry --remote --file=./schema/0001_init.sql",
+    "deploy": "wrangler pages deploy public"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}
