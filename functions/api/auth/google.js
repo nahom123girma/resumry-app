@@ -8,15 +8,19 @@ export async function onRequestPost(context) {
   let body;
   try { body = await request.json(); } catch { return error('Invalid JSON'); }
   const credential = body.credential;
-  if (!credential) return error('Missing Google credential');
+  const accessToken = body.access_token;
+  if (!credential && !accessToken) return error('Missing Google credential');
 
   // Verify with Google's tokeninfo endpoint (simple + no key needed).
-  const resp = await fetch('https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(credential));
+  const verifyUrl = accessToken
+    ? 'https://oauth2.googleapis.com/tokeninfo?access_token=' + encodeURIComponent(accessToken)
+    : 'https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(credential);
+  const resp = await fetch(verifyUrl);
   if (!resp.ok) return error('Google token verification failed', 401);
   const claims = await resp.json();
 
   // Audience must match your OAuth client id.
-  if (env.GOOGLE_CLIENT_ID && claims.aud !== env.GOOGLE_CLIENT_ID) {
+  if (env.GOOGLE_CLIENT_ID && claims.aud !== env.GOOGLE_CLIENT_ID && claims.azp !== env.GOOGLE_CLIENT_ID) {
     return error('Token audience mismatch', 401);
   }
   if (claims.email_verified !== 'true' && claims.email_verified !== true) {
@@ -24,13 +28,14 @@ export async function onRequestPost(context) {
   }
   const email = (claims.email || '').toLowerCase();
   if (!email) return error('No email in token', 401);
+  const claimsName = claims.name || body.name || '';
 
   let user = await env.DB.prepare('SELECT * FROM users WHERE email = ?').bind(email).first();
   if (!user) {
     const id = uuid();
     await env.DB.prepare(
       `INSERT INTO users (id, email, name, provider, plan) VALUES (?, ?, ?, 'google', 'free')`
-    ).bind(id, email, claims.name || '').run();
+    ).bind(id, email, claimsName).run();
     user = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(id).first();
   }
 
