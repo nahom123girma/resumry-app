@@ -12,8 +12,8 @@ database_id = "eea901cd-109f-459b-8df9-5ab3392acbd1"
 
 # --- Non-secret vars (safe to commit) --------------------------------------
 [vars]
-AI_API_URL = "https://api.openai.com/v1/chat/completions"
-AI_MODEL = "gpt-4o-mini"
+AI_API_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+AI_MODEL = "gemini-2.5-flash"
 # GOOGLE_CLIENT_ID is non-secret (it's public on the client too), but set it as a
 # var so the server can verify token audience:
 # GOOGLE_CLIENT_ID = "xxxxxxxx.apps.googleusercontent.com"
