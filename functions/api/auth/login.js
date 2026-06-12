@@ -1,6 +1,7 @@
 // functions/api/auth/login.js  —  POST { email, password }
 import { ok, error, sessionCookie } from '../../lib/response.js';
 import { verifyPassword, createSession, SESSION_TTL_SEC, publicUser } from '../../lib/auth.js';
+import { recordEvent } from '../../lib/events.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -18,6 +19,7 @@ export async function onRequestPost(context) {
   if (!valid) return error('Invalid email or password', 401);
 
   const { token } = await createSession(env, user.id, request.headers.get('User-Agent'));
+  await recordEvent(env, { kind: 'login', user });
   const res = ok({ user: publicUser(user) });
   res.headers.append('Set-Cookie', sessionCookie(token, SESSION_TTL_SEC));
   return res;
