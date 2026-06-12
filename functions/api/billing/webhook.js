@@ -1,6 +1,7 @@
 // functions/api/billing/webhook.js  —  POST  (Lemon Squeezy webhook receiver)
 // Verifies the signature, dedupes, and updates billing state in D1 (the source of truth).
 import { verifySignature, planFromVariant } from '../../lib/lemonsqueezy.js';
+import { recordEvent } from '../../lib/events.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -60,6 +61,18 @@ export async function onRequestPost(context) {
         `UPDATE users SET download_passes = download_passes + 1, updated_at=datetime('now') WHERE id=?`
       ).bind(user.id).run();
     }
+  }
+
+  // Admin event log: record the payment outcome (amount is in cents on LS).
+  const amount = attrs.total != null ? Number(attrs.total) / 100 : null;
+  if (eventName === 'subscription_payment_failed') {
+    await recordEvent(env, { kind: 'payment_failed', user, detail: plan || 'pro', amount });
+  } else if (
+    eventName === 'order_created' ||
+    eventName === 'subscription_created' ||
+    eventName === 'subscription_payment_success'
+  ) {
+    await recordEvent(env, { kind: 'payment_succeeded', user, detail: plan || billing || 'pro', amount });
   }
 
   return new Response('ok', { status: 200 });
