@@ -2873,6 +2873,23 @@ body.printing-doc #rp-print-root .cover-output *{ visibility:visible !important;
 <script src="js/store.js"></script>
 <script src="js/ai.js"></script>
 <script src="js/billing.js"></script>
+<style id="rv-styles">
+.needs-review{outline:2px solid #f0b400 !important;outline-offset:1px}
+label.has-review{position:relative}
+#importResult .rv-head{display:flex;flex-direction:column;gap:2px;margin-bottom:8px}
+#importResult .rv-head b{font-size:.95rem}
+#importResult .rv-head span{font-size:.78rem;opacity:.7}
+#importResult .rv-list{display:flex;flex-direction:column;gap:6px;max-height:340px;overflow:auto}
+#importResult .rv-row{display:grid;grid-template-columns:120px 1fr auto;gap:10px;align-items:start;padding:8px 10px;border:1px solid rgba(128,128,128,.25);border-radius:8px}
+#importResult .rv-field{font-weight:600;font-size:.82rem}
+#importResult .rv-val{font-size:.82rem;word-break:break-word}
+#importResult .rv-src{font-size:.72rem;opacity:.62;margin-top:3px}
+#importResult .rv-empty{opacity:.55;font-style:italic}
+.rv-badge{font-size:.68rem;padding:2px 8px;border-radius:999px;white-space:nowrap;font-weight:600}
+.rv-high{background:#e6f6ec;color:#1a7f44}
+.rv-review{background:#fff3d6;color:#9a6b00}
+.rv-none{background:rgba(128,128,128,.18);color:#888}
+</style>
 </head>
 <body>
 
@@ -7309,27 +7326,54 @@ function downloadBlob(blob, filename){
 }
 
 /* ───────────────────── PDF/DOCX TEXT EXTRACTION ───────────────────── */
+function _reconstructPdfPage(items){
+  // items: { x (left edge), y, w (width), str }
+  const toLines = group => {
+    const byY = {};
+    group.forEach(it => { const y = Math.round(it.y); (byY[y] = byY[y] || []).push(it); });
+    return Object.keys(byY)
+      .sort((a,b) => parseFloat(b) - parseFloat(a))          // top to bottom
+      .map(y => byY[y].sort((a,b) => a.x - b.x).map(i => i.str).join(' ').trim())
+      .filter(Boolean);
+  };
+  // Detect a clear two-column / sidebar layout: a vertical channel almost no text
+  // crosses, with substantial content on both sides. Conservative — otherwise we
+  // fall back to the original single-flow reconstruction (no behavior change).
+  if(items.length > 25){
+    const xs = items.map(i => i.x);
+    const minX = Math.min.apply(null, xs), maxX = Math.max.apply(null, xs);
+    const width = maxX - minX;
+    if(width > 200){
+      for(const frac of [0.5, 0.45, 0.55, 0.42, 0.58]){
+        const X = minX + width * frac;
+        const crossing = items.filter(i => i.x < X && (i.x + (i.w || 0)) > X).length;
+        const left  = items.filter(i => (i.x + (i.w || 0)) <= X);
+        const right = items.filter(i => i.x >= X);
+        if(crossing <= Math.max(2, items.length * 0.02) &&
+           left.length  > items.length * 0.2 &&
+           right.length > items.length * 0.2){
+          return toLines(left).concat(toLines(right));       // left column fully, then right
+        }
+      }
+    }
+  }
+  return toLines(items);
+}
 async function extractTextFromPdf(file, onProgress){
   const pdfjsLib = await ensurePdfJs();
   const buf = await readFileAsArrayBuffer(file);
   const pdf = await pdfjsLib.getDocument({data: buf}).promise;
   const pages = [];
-  for(let i = 1; i <= pdf.numPages; i++){
+  for(let i = 1; i <= pdf.numPages; i++){                     // every page
     if(onProgress) onProgress(i, pdf.numPages);
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    // Group items into lines using y-coordinate so structure is preserved
-    const itemsByLine = {};
+    const items = [];
     content.items.forEach(it => {
       if(!it.str || !it.transform) return;
-      const y = Math.round(it.transform[5]);
-      (itemsByLine[y] = itemsByLine[y] || []).push({x: it.transform[4], str: it.str});
+      items.push({ x: it.transform[4], y: it.transform[5], w: it.width || 0, str: it.str });
     });
-    const lines = Object.keys(itemsByLine)
-      .sort((a,b) => parseFloat(b) - parseFloat(a))  // top to bottom
-      .map(y => itemsByLine[y].sort((a,b) => a.x - b.x).map(i => i.str).join(' ').trim())
-      .filter(Boolean);
-    pages.push(lines.join('\n'));
+    pages.push(_reconstructPdfPage(items).join('\n'));
   }
   const out = { text: pages.join('\n\n'), pages: pages.length, raw: pages };
   if(typeof window !== 'undefined') window.__lastExtracted = out;  // DEBUG
@@ -7362,18 +7406,83 @@ function unspaceHeader(line){
 }
 
 const SECTION_HEADERS = {
-  summary:     /^(?:professional\s+)?(?:summary|profile|about|objective|overview)$/i,
+  summary:     /^(?:professional\s+)?(?:summary|profile|about|objective|career\s+objective|overview)$/i,
   experience:  /^(?:work\s+|professional\s+|relevant\s+)?(?:experience|employment|history|work)$/i,
-  education:   /^education(?:al)?(?:\s+background)?$/i,
-  skills:      /^(?:technical\s+|core\s+|key\s+)?skills(?:\s+&?\s+(?:expertise|competencies|tools))?$|^expertise$|^competencies$|^technologies$/i,
-  certifications: /^(?:certifications?|certs|licenses?|credentials)$/i,
-  projects:    /^projects?(?:\s+&?\s+publications?)?$|^portfolio$/i,
+  education:   /^education(?:al)?(?:\s+background)?$|^academic(?:\s+background)?$/i,
+  skills:      /^(?:technical\s+|core\s+|key\s+)?skills(?:\s+&?\s+(?:expertise|competencies|tools))?$|^expertise$|^competencies$|^technologies$|^technical\s+expertise$/i,
+  certifications: /^(?:certifications?|certs|licenses?|credentials|licenses?\s+&?\s+certifications?)$/i,
+  projects:    /^projects?(?:\s+&?\s+publications?)?$|^portfolio$|^selected\s+projects?$/i,
+  languages:   /^languages?$/i,
+  awards:      /^(?:awards?|honou?rs?|achievements?|awards?\s+&?\s+honou?rs?)$/i,
+  volunteer:   /^(?:volunteer(?:ing)?|volunteer\s+experience|community(?:\s+involvement)?)$/i,
+  publications:/^publications?$|^research$/i,
+  interests:   /^(?:interests?|hobbies|activities)$/i,
 };
+
+/* ── Extraction validation (traceability) ──
+   Guarantees every populated field traces back to text in the uploaded document.
+   Anything not found verbatim (case/whitespace-insensitive) in the source is
+   blanked. The parser EXTRACTS; it never generates, infers, or assumes. */
+function _normForMatch(s){ return (s == null ? '' : String(s)).toLowerCase().replace(/\s+/g, ' ').trim(); }
+function _sourceSnippet(rawText, val){
+  const target = _normForMatch(val);
+  if(!target) return '';
+  const lines = String(rawText).split(/\r?\n/);
+  for(const ln of lines){ if(_normForMatch(ln).includes(target)) return ln.trim().slice(0, 160); }
+  return String(val).slice(0, 160);
+}
+function validateExtraction(result, rawText){
+  const src = _normForMatch(rawText);
+  const inSrc = v => { const n = _normForMatch(v); return n.length > 0 && src.includes(n); };
+  // Token coverage: lets correctly-extracted-but-reordered text (e.g. merged from a
+  // two-column layout) pass even if it isn't a contiguous substring — while still
+  // blocking invented text, whose words won't be in the document.
+  const srcTokens = new Set(src.split(' ').filter(Boolean));
+  const tokenCoverage = v => {
+    const ws = _normForMatch(v).split(' ').filter(w => w.length > 1);
+    if(!ws.length) return 0;
+    return ws.filter(w => srcTokens.has(w)).length / ws.length;
+  };
+  const reviewFields = new Set(['name', 'title', 'location']); // heuristically guessed -> flag for review
+  const meta = {};
+  ['name','email','phone','location','title','summary','education','certifications','projects',
+   'languages','awards','volunteer','publications','interests'].forEach(f => {
+    const val = result[f];
+    if(!val){ result[f] = ''; meta[f] = { found: false, confidence: 'none', source: '' }; return; }
+    if(inSrc(val)){
+      meta[f] = { found: true, confidence: reviewFields.has(f) ? 'review' : 'high', source: _sourceSnippet(rawText, val) };
+    } else if(tokenCoverage(val) >= 0.8){
+      meta[f] = { found: true, confidence: 'review', source: _sourceSnippet(rawText, val) };
+    } else {
+      result[f] = '';                                   // not traceable -> blank; never invent
+      meta[f] = { found: false, confidence: 'none', source: '' };
+    }
+  });
+  if(Array.isArray(result.skills)){
+    const kept = result.skills.filter(inSrc);
+    meta.skills = { found: kept.length > 0, confidence: 'high', kept: kept.length, dropped: result.skills.length - kept.length };
+    result.skills = kept;
+  }
+  if(Array.isArray(result.experience)){
+    result.experience = result.experience.map(b => {
+      const roleAndCo = inSrc(b.roleAndCo) ? b.roleAndCo : '';
+      const company   = inSrc(b.company)   ? b.company   : '';
+      const dates     = inSrc(b.dates)     ? b.dates     : '';
+      const bullets   = (b.bullets || []).filter(inSrc);
+      return Object.assign({}, b, { roleAndCo, company, dates, bullets });
+    }).filter(b => b.roleAndCo || b.company || b.bullets.length);
+    meta.experience = { found: result.experience.length > 0, confidence: 'review', count: result.experience.length };
+  }
+  result._meta = meta;
+  result._rawText = rawText;
+  return result;
+}
 
 function parseResume(rawText){
   const lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   const result = { name:'', email:'', phone:'', location:'', title:'', summary:'',
-                   experience:[], education:'', skills:[], certifications:'', projects:'' };
+                   experience:[], education:'', skills:[], certifications:'', projects:'',
+                   languages:'', awards:'', volunteer:'', publications:'', interests:'' };
   const em = rawText.match(/[\w.+-]+@[\w-]+\.[\w.-]+/);
   if(em) result.email = em[0];
   for(const re of [
@@ -7381,13 +7490,13 @@ function parseResume(rawText){
     /\(?\b\d{3}\b\)?[\s.-]?\d{3}[\s.-]?\d{4}/,
     /\b\d{2,4}[\s.-]\d{2,4}[\s.-]\d{2,4}(?:[\s.-]\d{2,4})?/
   ]){ const m = rawText.match(re); if(m){ result.phone = m[0].trim(); break; } }
-  for(let i=0;i<Math.min(10,lines.length);i++){
+  for(let i=0;i<Math.min(14,lines.length);i++){
     const cleaned = lines[i].replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g,'').replace(/\+?\d[\d\s().-]{6,}/g,'');
     const m = cleaned.match(/\b([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)?),\s+([A-Z][a-zA-Z]+|[A-Z]{2,3})\b/);
     if(m){ result.location = m[0].trim(); break; }
   }
   const isHeader = ln => Object.values(SECTION_HEADERS).some(re => re.test(ln) || re.test(unspaceHeader(ln)));
-  for(let i=0;i<Math.min(6,lines.length);i++){
+  for(let i=0;i<Math.min(8,lines.length);i++){
     const ln = lines[i];
     if(/@/.test(ln) || /\d{3,}/.test(ln) || /^https?:/i.test(ln) || isHeader(ln)) continue;
     const words = ln.split(/\s+/);
@@ -7415,14 +7524,14 @@ function parseResume(rawText){
     if(cur) sections[cur].push(ln);
   }
   if(sections.summary) result.summary = sections.summary.join(' ').replace(/\s+/g,' ').trim();
-  if(sections.education) result.education = sections.education.join(' ').replace(/\s+/g,' ').trim().slice(0,200);
+  if(sections.education) result.education = sections.education.join(' ').replace(/\s+/g,' ').trim();
   if(sections.skills){
     result.skills = [...new Set(
       sections.skills.join(' ')
         .split(/[,•·|\u2022\u00b7;]|\s+\/\s+|\s+&\s+/)
         .map(s => s.trim().replace(/^[-–—]\s*/,''))
         .filter(s => s.length>0 && s.length<40)
-    )].slice(0,16);
+    )].slice(0,60);
   }
   if(sections.experience){
     const monthRe = /(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec|january|february|march|april|june|july|august|september|october|november|december)\.?\s*\d{4}/i;
@@ -7447,41 +7556,90 @@ function parseResume(rawText){
       }
     }
     if(cc) blocks.push(cc);
-    result.experience = blocks.slice(0,6);
+    result.experience = blocks.slice(0,30);
   }
   if(sections.certifications) result.certifications = sections.certifications.join('\n').trim();
   if(sections.projects) result.projects = sections.projects.join('\n').trim();
+  if(sections.languages) result.languages = sections.languages.join('\n').trim();
+  if(sections.awards) result.awards = sections.awards.join('\n').trim();
+  if(sections.volunteer) result.volunteer = sections.volunteer.join('\n').trim();
+  if(sections.publications) result.publications = sections.publications.join('\n').trim();
+  if(sections.interests) result.interests = sections.interests.join('\n').trim();
+  validateExtraction(result, rawText);   // strict: drop anything not traceable to the document
   if(typeof window !== 'undefined') window.__lastParsed = result;
   return result;
 }
 
+/* Flag a field as "Needs Review" (uncertain heuristic extraction) and attach
+   its source text from the résumé for verification. */
+function markReview(el, m){
+  if(!el) return;
+  const wrap = el.closest('label') || el.parentElement || el;
+  el.classList.remove('needs-review');
+  if(wrap && wrap.classList) wrap.classList.remove('has-review');
+  el.removeAttribute('title');
+  if(m && m.found && m.confidence === 'review'){
+    el.classList.add('needs-review');
+    if(wrap && wrap.classList) wrap.classList.add('has-review');
+    el.title = 'Needs review — verify against your résumé. Source: "' + (m.source || '') + '"';
+  }
+}
+/* Render a traceability panel: every field, its confidence, and the source text. */
+function renderImportReview(parsed){
+  const box = $('#importResult');
+  if(!box) return;
+  const meta = parsed._meta || {};
+  const labels = { name:'Name', email:'Email', phone:'Phone', location:'Location', title:'Title', summary:'Summary', education:'Education', certifications:'Certifications', projects:'Projects', languages:'Languages', awards:'Awards', volunteer:'Volunteer', publications:'Publications', interests:'Interests' };
+  const badge = c => c === 'high' ? '<span class="rv-badge rv-high">Verified</span>'
+                    : c === 'review' ? '<span class="rv-badge rv-review">Needs review</span>'
+                    : '<span class="rv-badge rv-none">Not found</span>';
+  const rows = [];
+  Object.keys(labels).forEach(f => {
+    const m = meta[f] || { confidence: 'none' };
+    const val = (parsed[f] || '').toString();
+    const display = val ? escapeHtml(val.slice(0, 120)) : '<em class="rv-empty">Left blank — not in document</em>';
+    const source = m.source ? '<div class="rv-src">Source: "' + escapeHtml(m.source) + '"</div>' : '';
+    rows.push('<div class="rv-row"><div class="rv-field">' + labels[f] + '</div><div class="rv-val">' + display + source + '</div><div class="rv-conf">' + badge(m.confidence) + '</div></div>');
+  });
+  const sk = meta.skills || {};
+  const skVal = (parsed.skills && parsed.skills.length) ? escapeHtml(parsed.skills.join(', ')) : '<em class="rv-empty">None found</em>';
+  const skDrop = sk.dropped ? '<div class="rv-src">' + sk.dropped + ' candidate(s) dropped — not found in document</div>' : '';
+  rows.push('<div class="rv-row"><div class="rv-field">Skills</div><div class="rv-val">' + skVal + skDrop + '</div><div class="rv-conf">' + badge(parsed.skills && parsed.skills.length ? 'high' : 'none') + '</div></div>');
+  const exVal = (parsed.experience && parsed.experience.length) ? (parsed.experience.length + ' role(s) extracted from the document') : '<em class="rv-empty">None found</em>';
+  rows.push('<div class="rv-row"><div class="rv-field">Experience</div><div class="rv-val">' + exVal + '</div><div class="rv-conf">' + badge(parsed.experience && parsed.experience.length ? 'review' : 'none') + '</div></div>');
+  box.hidden = false;
+  box.innerHTML = '<div class="rv-head"><b>Review extracted data</b><span>Every field is traced to your uploaded résumé. Blank = not present. Please verify any "Needs review" fields.</span></div><div class="rv-list">' + rows.join('') + '</div>';
+}
+
 /* Apply parsed résumé data into the live builder form */
 function autoPopulateResume(parsed){
-  // Top-level identity fields
-  const setField = (sel, val) => {
+  // Replace semantics: the uploaded document is the single source of truth, so
+  // every field is set from the parse. Fields NOT found are blanked (never left
+  // holding stale/demo data). Uncertain fields get a "Needs Review" flag.
+  const meta = parsed._meta || {};
+  const setField = (sel, val, key) => {
     const el = $(sel);
-    if(!el || !val) return;
-    el.value = val;
+    if(!el) return;
+    el.value = val || '';
     el.dispatchEvent(new Event('input', {bubbles:true}));
+    markReview(el, key ? meta[key] : null);
   };
-  setField('#rf-name', parsed.name);
-  setField('#rf-title', parsed.title);
-  setField('#rf-email', parsed.email);
-  setField('#rf-phone', parsed.phone);
-  setField('#rf-location', parsed.location);
-  setField('#rf-summary', parsed.summary);
-  setField('#rf-education', parsed.education);
+  setField('#rf-name', parsed.name, 'name');
+  setField('#rf-title', parsed.title, 'title');
+  setField('#rf-email', parsed.email, 'email');
+  setField('#rf-phone', parsed.phone, 'phone');
+  setField('#rf-location', parsed.location, 'location');
+  setField('#rf-summary', parsed.summary, 'summary');
+  setField('#rf-education', parsed.education, 'education');
 
-  // Skills — clear current then add each parsed skill
-  if(parsed.skills.length){
-    resumeState.skills = parsed.skills.slice();
-    renderChips();
-    saveResumeState();
-  }
+  // Skills — replace with exactly the skills found in the document (may be none)
+  resumeState.skills = (parsed.skills || []).slice();
+  renderChips();
+  saveResumeState();
 
-  // Experience — replace blocks with parsed ones
-  if(parsed.experience.length){
-    resumeState.experiences = parsed.experience.map((b, idx) => {
+  // Experience — replace blocks with exactly what was found (may be none)
+  {
+    resumeState.experiences = (parsed.experience || []).map((b, idx) => {
       // Use the explicit company field from the parser if set;
       // otherwise fall back to splitting roleAndCo on common separators.
       let role = b.roleAndCo || '';
@@ -7495,16 +7653,21 @@ function autoPopulateResume(parsed){
       }
       return {
         id: 'exp_' + Date.now() + '_' + idx,
-        role: role || 'Role',
+        role: role || '',
         company: company || '',
         dates: b.dates || '',
-        bullets: (b.bullets || []).slice(0, 6).map(bl => '• ' + bl.replace(/^•\s*/, '')).join('\n')
+        bullets: (b.bullets || []).slice(0, 20).map(bl => '• ' + bl.replace(/^•\s*/, '')).join('\n')
       };
     });
     renderExpBlocks();
     saveResumeState();
   }
 
+  // Preserve additional extracted sections (no dedicated builder field yet — shown
+  // in the review panel for verification). Inert data; templates ignore unknown keys.
+  ['languages','awards','volunteer','publications','interests'].forEach(k => { resumeState[k] = parsed[k] || ''; });
+
+  renderImportReview(parsed);
   updatePreview();
   return true;
 }
