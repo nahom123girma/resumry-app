@@ -3682,7 +3682,7 @@ label.has-review{position:relative}
             <li><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7l3 3 5-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>No subscription</li>
             <li class="excl"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span class="sr-only">Not included: </span>AI, ATS, cover letters, DOCX</li>
           </ul>
-          <a href="#auth?signup" class="btn btn-ghost" data-link>Get Download Pass</a>
+          <a href="#auth?signup" class="btn btn-ghost" data-link data-plan-cta="download_pass">Get Download Pass</a>
           <p class="plan-foot">One clean download, yours to keep</p>
         </div>
 
@@ -3714,7 +3714,7 @@ label.has-review{position:relative}
             <li><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7l3 3 5-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>ATS &amp; AI tools (fair-use cap)</li>
             <li><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7l3 3 5-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>No recurring fees, ever</li>
           </ul>
-          <a href="#auth?signup" class="btn btn-primary" data-link>Get Lifetime</a>
+          <a href="#auth?signup" class="btn btn-primary" data-link data-plan-cta="lifetime">Get Lifetime</a>
           <p class="plan-foot">Best value for professionals</p>
         </div>
       </div>
@@ -8672,6 +8672,40 @@ document.addEventListener('click', (e) => {
   }
 });
 
+/* ─── Stripe checkout ────────────────────────────────────────────── */
+function currentProPlanKey(){
+  const label = (document.querySelector('[data-cycle-label]')?.textContent || '').toLowerCase();
+  if(label.includes('year') || label.includes('annual')) return 'pro_annual';
+  const pressed = document.querySelector('.billing-toggle button[aria-pressed="true"]');
+  if(pressed && /year|annual/i.test(pressed.textContent || '')) return 'pro_annual';
+  return 'pro_monthly';
+}
+async function startStripeCheckout(planKey){
+  try {
+    toast('Opening secure checkout…', 'info', 2500);
+    const res = await Resumry.api.post('/billing/checkout', { plan: planKey });
+    if(res && res.url){ window.location.href = res.url; return; }
+    toast('Could not start checkout. Please try again.', 'error', 4000);
+  } catch(err){
+    toast((err && err.message) || 'Checkout failed. Please try again.', 'error', 4000);
+  }
+}
+/* Returning from Stripe-hosted checkout */
+(function handleCheckoutReturn(){
+  try {
+    const q = new URLSearchParams(location.search);
+    const c = q.get('checkout');
+    if(!c) return;
+    history.replaceState(null, '', location.pathname + location.hash);
+    if(c === 'success'){
+      toast('Payment received — updating your account…', 'success', 4000);
+      setTimeout(() => location.reload(), 2500);
+    } else if(c === 'cancel'){
+      toast('Checkout canceled — you have not been charged.', 'info', 3500);
+    }
+  } catch(_){}
+})();
+
 /* ─── Plan-gating wire-up ──────────────────────────────────────────
    Pricing-CTA → plan switch; upgrade-modal triggers + close handlers. */
 document.addEventListener('click', (e) => {
@@ -8679,6 +8713,18 @@ document.addEventListener('click', (e) => {
   const planCta = e.target.closest('[data-plan-cta]');
   if(planCta){
     const wanted = planCta.getAttribute('data-plan-cta');
+    // Real Stripe checkout for paid plans (subscription + one-time)
+    if(wanted === 'pro' || wanted === 'lifetime' || wanted === 'download_pass'){
+      const su = currentUser();
+      if(su){
+        e.preventDefault();
+        startStripeCheckout(wanted === 'pro' ? currentProPlanKey() : wanted);
+      } else {
+        try { localStorage.setItem('cf-plan-intent', wanted); } catch(_){}
+        // not signed in → the sign-up link handles routing; finish the purchase after signing in
+      }
+      return;
+    }
     if(wanted === 'business'){
       try { localStorage.setItem('cf-plan-intent','business'); } catch(_){}
     } else if(PLAN_TIERS.includes(wanted)){
