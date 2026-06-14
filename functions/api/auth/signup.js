@@ -2,6 +2,7 @@
 import { ok, error, sessionCookie } from '../../lib/response.js';
 import { uuid, hashPassword, createSession, SESSION_TTL_SEC, publicUser } from '../../lib/auth.js';
 import { recordEvent } from '../../lib/events.js';
+import { sendEmail, randomToken, hashToken, verifyEmailHtml } from '../../lib/email.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -27,6 +28,23 @@ export async function onRequestPost(context) {
   const { token } = await createSession(env, id, request.headers.get('User-Agent'));
   const user = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(id).first();
   await recordEvent(env, { kind: 'signup', user });
+
+  // Send the email-verification link (non-blocking — never fails signup).
+  try {
+    const vtok = randomToken();
+    await env.DB
+      .prepare("INSERT INTO auth_tokens (token_hash, user_id, kind, expires_at) VALUES (?, ?, 'email_verify', datetime('now','+2 days'))")
+      .bind(await hashToken(vtok), id)
+      .run();
+    const link = new URL(request.url).origin + '/api/auth/verify?token=' + vtok;
+    await sendEmail(env, {
+      to: email,
+      subject: 'Verify your Resumry email',
+      html: verifyEmailHtml(name, link),
+      text: 'Verify your email: ' + link,
+    });
+  } catch (_) {}
+
   const res = ok({ user: publicUser(user) });
   res.headers.append('Set-Cookie', sessionCookie(token, SESSION_TTL_SEC));
   return res;
