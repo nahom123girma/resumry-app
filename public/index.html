@@ -3292,7 +3292,7 @@ label.has-review{position:relative}
           <div class="row2">
             <div class="field" data-validate="required,maxlen:80,safe">
               <label for="rf-name">Full name<span class="req" aria-hidden="true">*</span></label>
-              <input id="rf-name" type="text" data-field="name" value="Maya Okonkwo" required maxlength="80" autocomplete="name" aria-required="true" aria-describedby="rf-name-err" />
+              <input id="rf-name" type="text" data-field="name" value="" placeholder="Your full name" required maxlength="80" autocomplete="name" aria-required="true" aria-describedby="rf-name-err" />
               <div class="error-msg" id="rf-name-err" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M7 4v3M7 9v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span></span></div>
             </div>
             <div class="field" data-validate="required,maxlen:100,safe">
@@ -3305,19 +3305,19 @@ label.has-review{position:relative}
           <div class="row2">
             <div class="field" data-validate="required,email,safe">
               <label for="rf-email">Email<span class="req" aria-hidden="true">*</span></label>
-              <input id="rf-email" type="email" data-field="email" value="maya.okonkwo@mail.co" required autocomplete="email" inputmode="email" aria-required="true" aria-describedby="rf-email-err" />
+              <input id="rf-email" type="email" data-field="email" value="" placeholder="you@email.com" required autocomplete="email" inputmode="email" aria-required="true" aria-describedby="rf-email-err" />
               <div class="error-msg" id="rf-email-err" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M7 4v3M7 9v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span></span></div>
             </div>
             <div class="field" data-validate="maxlen:30,safe">
               <label for="rf-phone">Phone</label>
-              <input id="rf-phone" type="tel" data-field="phone" value="+1 415 555 0142" maxlength="30" autocomplete="tel" inputmode="tel" aria-describedby="rf-phone-err" />
+              <input id="rf-phone" type="tel" data-field="phone" value="" placeholder="Phone (optional)" maxlength="30" autocomplete="tel" inputmode="tel" aria-describedby="rf-phone-err" />
               <div class="error-msg" id="rf-phone-err" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M7 4v3M7 9v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span></span></div>
             </div>
           </div>
 
           <div class="field" data-validate="maxlen:80,safe">
             <label for="rf-location">Location</label>
-            <input id="rf-location" type="text" data-field="location" value="San Francisco, CA" maxlength="80" autocomplete="address-level2" aria-describedby="rf-location-err" />
+            <input id="rf-location" type="text" data-field="location" value="" placeholder="City, State" maxlength="80" autocomplete="address-level2" aria-describedby="rf-location-err" />
             <div class="error-msg" id="rf-location-err" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M7 4v3M7 9v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span></span></div>
           </div>
 
@@ -3407,12 +3407,12 @@ label.has-review{position:relative}
             <span class="eyebrow" style="margin:0">Live preview</span>
           </div>
           <div class="preview-doc tpl-modern" id="resumePreview" aria-live="polite" aria-label="Resume preview">
-            <h2 id="rp-name">Maya Okonkwo</h2>
+            <h2 id="rp-name">Your Name</h2>
             <div class="role-line" id="rp-title">Senior Product Designer</div>
             <div class="meta">
-              <span id="rp-email">maya.okonkwo@mail.co</span>
-              <span id="rp-phone">+1 415 555 0142</span>
-              <span id="rp-location">San Francisco, CA</span>
+              <span id="rp-email"></span>
+              <span id="rp-phone"></span>
+              <span id="rp-location"></span>
             </div>
             <div class="rp-section" data-section="summary"><h3>Summary</h3><p id="rp-summary">Senior product designer with 8+ years shipping enterprise SaaS. Led design systems work at two Series-B startups; comfortable across discovery, prototyping, and ship-it execution.</p></div>
             <div class="rp-section" data-section="experience"><h3>Experience</h3><div id="rp-experience"></div></div>
@@ -3532,7 +3532,7 @@ label.has-review{position:relative}
           <div class="row2">
             <div class="field" data-validate="required,maxlen:80,safe">
               <label for="cl-name">Your name<span class="req" aria-hidden="true">*</span></label>
-              <input id="cl-name" type="text" data-cl="name" value="Maya Okonkwo" required maxlength="80" aria-required="true" aria-describedby="cl-name-err" />
+              <input id="cl-name" type="text" data-cl="name" value="" placeholder="Your full name" required maxlength="80" aria-required="true" aria-describedby="cl-name-err" />
               <div class="error-msg" id="cl-name-err" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M7 4v3M7 9v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span></span></div>
             </div>
             <div class="field" data-validate="maxlen:80,safe">
@@ -3579,16 +3579,10 @@ label.has-review{position:relative}
         <div class="preview-wrap">
           <div class="preview-toolbar">
             <span class="eyebrow" style="margin:0">Editable preview</span>
-            <span style="font-size:.78rem;color:var(--ink-3)" id="coverWords" aria-live="polite">312 words</span>
+            <span style="font-size:.78rem;color:var(--ink-3)" id="coverWords" aria-live="polite">0 words</span>
           </div>
           <div class="cover-output" id="coverOutput" contenteditable="true" spellcheck="true" role="textbox" aria-multiline="true" aria-label="Cover letter draft">
-            <div class="from">Maya Okonkwo<br/>maya.okonkwo@mail.co · +1 415 555 0142</div>
-            <div class="salute">Dear Hiring Team,</div>
-            <p>I'm writing to apply for the Senior Product Designer role at Notion. After eight years of designing tools that help teams work better — most recently at Linear Cloud, where I led the redesign of our analytics platform and shipped a system now used across 14 product teams — the chance to shape the next generation of Notion's editor feels like the right next step.</p>
-            <p>What stands out to me about your team is how seriously you take craft. The way Notion balances flexibility with structure is rare, and it mirrors how I approach design systems work: making it easy to do the right thing without sacrificing room to invent. I'd bring direct experience leading systems-level decisions, embedding research into the design process, and partnering closely with engineering — three threads I noticed running through your job description.</p>
-            <p>Beyond the experience listed on my resume, I've spent the past year mentoring junior designers and facilitating discovery workshops with cross-functional partners. I'd love to bring that mix of hands-on craft and team-building energy to Notion.</p>
-            <p>Thank you for the consideration. I'd welcome the chance to talk.</p>
-            <div class="sign">Warmly,<br/>Maya</div>
+            <p style="color:var(--ink-3)">Fill in the details on the left and press <b>Generate Cover Letter</b> — your personalized draft will appear here, ready to edit.</p>
           </div>
         </div>
       </div>
@@ -3745,7 +3739,7 @@ label.has-review{position:relative}
   <div class="page-header" style="padding:48px 0 24px;text-align:left">
     <div class="container" style="text-align:left">
       <span class="eyebrow">Dashboard</span>
-      <h1 style="font-size:clamp(1.6rem,3.4vw,2.4rem)">Welcome back, <span class="squiggle">Maya.<svg><use href="#squiggle"/></svg></span></h1>
+      <h1 style="font-size:clamp(1.6rem,3.4vw,2.4rem)">Welcome back, <span class="squiggle"><span id="dashHeroName">there</span>.<svg><use href="#squiggle"/></svg></span></h1>
       <p style="margin:8px 0 0 0">Pick up where you left off — your drafts, ATS reports, and downloads are all here.</p>
     </div>
   </div>
@@ -3756,7 +3750,7 @@ label.has-review{position:relative}
         <div class="dash-side">
           <div class="dash-user">
             <div class="avatar" id="dashUserAvatar" aria-hidden="true">MO</div>
-            <div><b id="dashUserName">Maya Okonkwo</b><small id="dashUserPlan">Pro plan</small></div>
+            <div><b id="dashUserName"></b><small id="dashUserPlan">Free plan</small></div>
           </div>
           <div class="dash-upgrade-card" id="dashUpgradeCard" hidden>
             <div class="dash-upgrade-head">
@@ -4340,7 +4334,7 @@ label.has-review{position:relative}
     <div id="otpStepPhone">
       <label class="pay-field">
         <span>Phone number</span>
-        <input type="tel" id="otpPhone" inputmode="tel" autocomplete="tel" maxlength="24" placeholder="+1 415 555 0142" aria-label="Phone number" />
+        <input type="tel" id="otpPhone" inputmode="tel" autocomplete="tel" maxlength="24" placeholder="Your phone number" aria-label="Phone number" />
       </label>
       <p class="pay-note">
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><rect x="2" y="6" width="9" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M4 6V4a2.5 2.5 0 015 0v2" stroke="currentColor" stroke-width="1.3"/></svg>
@@ -4966,7 +4960,7 @@ function applyPlanUi(){
     badge.hidden = !isLoggedIn();
   }
 
-  // 3. Dashboard sidebar user line (Maya Okonkwo · Pro plan)
+  // 3. Dashboard sidebar user line (name · plan)
   const dashPlanLabel = $('#dashUserPlan');
   if(dashPlanLabel) dashPlanLabel.textContent = PLAN_LABEL[userPlan] + ' plan';
 
@@ -5563,6 +5557,8 @@ function applyAuthUi(){
   const startBtn = $('#headerStartBtn');
   const dashName = $('#dashUserName');
   const dashAvatar = $('#dashUserAvatar');
+  const heroName = $('#dashHeroName');
+  const firstName = (user && user.name ? String(user.name).trim().split(/\s+/)[0] : '') || 'there';
 
   if(user){
     if(menu){
@@ -5579,6 +5575,7 @@ function applyAuthUi(){
     if(startBtn) startBtn.hidden = true;
     if(dashName) dashName.textContent = user.name || 'Not provided';
     if(dashAvatar) dashAvatar.textContent = initialsFor(user.name);
+    if(heroName) heroName.textContent = firstName;
     seedBuilderFromAccount(user);
   } else {
     if(menu) menu.hidden = true;
@@ -5586,7 +5583,34 @@ function applyAuthUi(){
     if(startBtn) startBtn.hidden = false;
     if(dashName) dashName.textContent = 'Guest';
     if(dashAvatar) dashAvatar.textContent = 'G';
+    if(heroName) heroName.textContent = 'there';
   }
+}
+
+/* Backend is the source of truth. Mirror the authoritative server user
+   (name / email / phone / plan) into the local record + UI. Plan maps to
+   pro only when the server says pro|lifetime — anything else is free. */
+function syncServerUser(su){
+  try {
+    if(!su) return;
+    const serverPlan = (su.plan === 'pro' || su.plan === 'lifetime') ? 'pro' : 'free';
+    const sess = loadSession();
+    if(sess && sessionValid(sess)){
+      const users = loadUsers();
+      const i = users.findIndex(x => x.id === sess.userId);
+      if(i >= 0){
+        if(su.name)  users[i].name  = su.name;
+        if(su.email) users[i].email = String(su.email).toLowerCase();
+        if(su.phone != null && su.phone !== '') users[i].phone = su.phone;
+        if(su.email_verified != null) users[i].verifiedEmail = !!su.email_verified;
+        users[i].plan = serverPlan;        // server wins
+        delete users[i].trialEndsAt;       // trials are server-decided now
+        saveUsers(users);
+      }
+    }
+    if(typeof setPlan === 'function') setPlan(serverPlan, { silent:true });
+    applyAuthUi();
+  } catch(e){}
 }
 
 /* ───────────────────── RESUME STATE & PERSISTENCE ───────────────────── */
@@ -5609,11 +5633,11 @@ function applyStorageScope(){
 applyStorageScope();
 
 const DEFAULT_RESUME = {
-  name: 'Maya Okonkwo',
-  title: 'Senior Product Designer',
-  email: 'maya.okonkwo@mail.co',
-  phone: '+1 415 555 0142',
-  location: 'San Francisco, CA',
+  name: '',
+  title: '',
+  email: '',
+  phone: '',
+  location: '',
   summary: 'Senior product designer with 8+ years shipping enterprise SaaS. Led design systems work at two Series-B startups; comfortable across discovery, prototyping, and ship-it execution.',
   education: 'BFA, Visual Design — Rhode Island School of Design, 2014',
   experiences: [
@@ -7111,7 +7135,9 @@ async function generateCoverLetter(opts){
   from.appendChild(document.createTextNode(name));
   from.appendChild(document.createElement('br'));
   const email = $('#rf-email')?.value || resumeState.email || '';
-  from.appendChild(document.createTextNode(email + ' · ' + (resumeState.phone || '+1 415 555 0142')));
+  const phone = $('#rf-phone')?.value || resumeState.phone || '';
+  const contact = [email, phone].filter(Boolean).join(' · ');
+  if(contact) from.appendChild(document.createTextNode(contact));
   out.appendChild(from);
 
   const salute = document.createElement('div');
@@ -8627,15 +8653,17 @@ function init(){
   initCustomizer();
   initCookieConsent();
   loadAnalytics();
-  // Server bootstrap (Cloudflare backend) — server plan/session is authoritative when present.
+  // Server bootstrap — the backend is the source of truth. FAIL CLOSED: drop to
+  // free immediately so a stale browser value can't keep Pro unlocked, then
+  // upgrade only if the server confirms a paid plan.
+  try { if(typeof setPlan === 'function') setPlan('free', { silent:true }); } catch(e){}
   try {
     if(window.Resumry && Resumry.session){
       Resumry.session.refresh().then(function(s){
         try {
           if(s && s.user){
             window.__serverUser = s.user;
-            var sp = (s.user.plan === 'pro' || s.user.plan === 'lifetime') ? 'pro' : 'free';
-            if(typeof setPlan === 'function') setPlan(sp, { silent:true });
+            syncServerUser(s.user);
           }
           if(Resumry.store) Resumry.store.flushQueue();
         } catch(e){}
@@ -8702,6 +8730,27 @@ async function startStripeCheckout(planKey){
       setTimeout(() => location.reload(), 2500);
     } else if(c === 'cancel'){
       toast('Checkout canceled — you have not been charged.', 'info', 3500);
+    }
+  } catch(_){}
+})();
+
+/* Returning from the email-verification link (/api/auth/verify redirects here) */
+(function handleVerifyReturn(){
+  try {
+    const q = new URLSearchParams(location.search);
+    const v = q.get('verified');
+    if(!v) return;
+    history.replaceState(null, '', location.pathname + location.hash);
+    if(v === 'success'){
+      const u = currentUser();
+      if(u){ const users = loadUsers(); const i = users.findIndex(x => x.id === u.id); if(i >= 0){ users[i].verifiedEmail = true; saveUsers(users); } }
+      toast('Email verified. 🎉', 'success', 4000);
+      if(typeof renderVerifyBanner === 'function') renderVerifyBanner();
+      if(typeof renderProfileVerifyTiles === 'function') renderProfileVerifyTiles();
+    } else if(v === 'expired'){
+      toast('That verification link expired — send a fresh one from your profile.', 'warn', 5000);
+    } else {
+      toast('That verification link was invalid — send a fresh one from your profile.', 'warn', 5000);
     }
   } catch(_){}
 })();
@@ -9343,18 +9392,23 @@ function issueAndShowEmailVerifyLink(){
     toast(`Please wait ${sec}s before resending.`, 'warn');
     return;
   }
-  const token = cfApi.createVerificationToken(u.id, 'email_verify');
+  if(!(window.Resumry && Resumry.api)){ toast('Email service unavailable — please try again shortly.', 'error'); return; }
   resendCooldowns.email = Date.now() + RESEND_COOLDOWN_MS;
-  // Store the latest token so the "Open link" button can use it
-  try { localStorage.setItem('cf-last-verify-token', token.token); } catch(_) {}
-  toast(
-    `Verification email sent to ${u.email}. (Demo: click the toast to open the link.)`,
-    'success',
-    8000,
-    () => { consumeEmailVerifyToken(token.token); }
-  );
   updateResendCooldown('email', $('#verifyResendBtn'));
   updateResendCooldown('email', $('#verifyEmailBtn'));
+  // Real send — the server issues a token and emails a verify link via Resend.
+  Resumry.api.post('/auth/send-verification', {}).then(function(r){
+    if(r && r.alreadyVerified){
+      const users = loadUsers(); const i = users.findIndex(x => x.id === u.id);
+      if(i >= 0){ users[i].verifiedEmail = true; saveUsers(users); }
+      toast('Your email is already verified.', 'success');
+      renderVerifyBanner(); renderProfileVerifyTiles();
+      return;
+    }
+    toast('Verification email sent to ' + u.email + '. Check your inbox.', 'success', 6000);
+  }).catch(function(err){
+    toast((err && err.message) || 'Could not send the verification email.', 'error', 4000);
+  });
 }
 
 function consumeEmailVerifyToken(rawToken){
@@ -9510,51 +9564,63 @@ function renderBillingHistory(){
   const list = $('#billingHistoryList');
   if(!list) return;
   const u = currentUser();
-  if(!u){ list.innerHTML = ''; return; }
-  const invoices = cfApi.getUserInvoices(u.id);
-  // Render renewal date
   const renewalEl = $('#billingRenewal');
-  const sub = cfApi.getActiveSubscription(u.id);
-  if(renewalEl){
-    if(sub){
-      const date = new Date(sub.currentPeriodEnd).toLocaleDateString(undefined, {year:'numeric', month:'short', day:'numeric'});
-      renewalEl.textContent = sub.cancelAtPeriodEnd ? `Cancels on ${date}` : `Renews on ${date}`;
-    } else {
-      renewalEl.textContent = '';
-    }
-  }
-  if(invoices.length === 0){
-    list.innerHTML = emptyStateHtml({
-      icon: '<svg width="36" height="36" viewBox="0 0 36 36" fill="none"><rect x="8" y="6" width="20" height="24" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M13 12h10M13 16h10M13 20h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
-      title: 'No invoices yet',
-      body: 'When you upgrade to a paid plan, invoices and receipts will appear here.',
-    });
-    return;
-  }
-  list.innerHTML = '';
-  invoices.forEach(inv => {
-    const row = document.createElement('div');
-    row.className = 'invoice-row';
-    const date = new Date(inv.issuedAt).toLocaleDateString(undefined, {year:'numeric', month:'short', day:'numeric'});
-    const planLabel = (PLAN_LABEL[inv.plan] || inv.plan);
-    row.innerHTML = `
-      <span class="invoice-num"></span>
-      <div class="invoice-meta"><b></b><span></span></div>
-      <span class="invoice-amount">$${inv.amount.toFixed(2)}</span>
-      <span class="invoice-status ${escapeHtml(inv.status)}"></span>
-      <button type="button" class="btn btn-ghost btn-xs" data-invoice-id="${escapeHtml(inv.id)}">Receipt</button>
-    `;
-    row.querySelector('.invoice-num').textContent = inv.number;
-    // Tool purchases get their own label (e.g., "PDF to Word · pay-per-file"); subscriptions get "Pro subscription"
-    if(inv.plan === 'tool'){
-      row.querySelector('.invoice-meta b').textContent = `${inv.description || 'Tool'} · pay-per-file`;
-    } else {
-      row.querySelector('.invoice-meta b').textContent = `${planLabel} subscription`;
-    }
-    row.querySelector('.invoice-meta span').textContent = `${date}${inv.stripeChargeId ? ' · ' + inv.stripeChargeId : ''}`;
-    row.querySelector('.invoice-status').textContent = inv.status;
-    list.appendChild(row);
+  if(renewalEl) renewalEl.textContent = '';
+  if(!u){ list.innerHTML = ''; return; }
+
+  const emptyHtml = () => emptyStateHtml({
+    icon: '<svg width="36" height="36" viewBox="0 0 36 36" fill="none"><rect x="8" y="6" width="20" height="24" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M13 12h10M13 16h10M13 20h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+    title: 'No invoices yet',
+    body: 'When you upgrade to a paid plan, your invoices and receipts will appear here.',
   });
+
+  if(!(window.Resumry && Resumry.api)){ list.innerHTML = emptyHtml(); return; }
+  list.innerHTML = '<div style="padding:18px;color:var(--ink-3);font-size:.86rem">Loading your receipts…</div>';
+
+  // Real payment history comes from Stripe via the server — never local/demo data.
+  Resumry.api.get('/billing/receipts').then(function(r){
+    const receipts = (r && r.receipts) || [];
+    if(receipts.length === 0){ list.innerHTML = emptyHtml(); return; }
+    list.innerHTML = '';
+    receipts.forEach(function(inv){
+      const row = document.createElement('div');
+      row.className = 'invoice-row';
+      const date = inv.date ? new Date(inv.date).toLocaleDateString(undefined, {year:'numeric', month:'short', day:'numeric'}) : '';
+      const allowed = ['paid','refunded','failed','upcoming'];
+      const statusClass = allowed.indexOf(inv.status) >= 0 ? inv.status : 'paid';
+
+      const numEl = document.createElement('span');
+      numEl.className = 'invoice-num';
+      numEl.textContent = (inv.id || '').slice(0, 18);
+
+      const meta = document.createElement('div');
+      meta.className = 'invoice-meta';
+      const metaB = document.createElement('b'); metaB.textContent = inv.description || 'Payment';
+      const metaS = document.createElement('span'); metaS.textContent = date;
+      meta.appendChild(metaB); meta.appendChild(metaS);
+
+      const amt = document.createElement('span');
+      amt.className = 'invoice-amount';
+      amt.textContent = '$' + (inv.amount || 0).toFixed(2);
+
+      const status = document.createElement('span');
+      status.className = 'invoice-status ' + statusClass;
+      status.textContent = inv.status || 'paid';
+
+      row.appendChild(numEl); row.appendChild(meta); row.appendChild(amt); row.appendChild(status);
+
+      if(inv.receipt_url){
+        const link = document.createElement('a');
+        link.className = 'btn btn-ghost btn-xs';
+        link.href = inv.receipt_url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = 'Receipt';
+        row.appendChild(link);
+      }
+      list.appendChild(row);
+    });
+  }).catch(function(){ list.innerHTML = emptyHtml(); });
 }
 
 /* Generate a downloadable receipt for an invoice */
