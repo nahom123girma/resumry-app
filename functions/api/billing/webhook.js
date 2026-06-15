@@ -2,6 +2,7 @@
 // Stripe webhook. Verifies the signature with Web Crypto (no SDK), then updates
 // the user's plan in D1 and logs the event for the admin dashboard.
 import { recordEvent } from '../../lib/events.js';
+import { sendEmail, receiptHtml } from '../../lib/email.js';
 
 async function verifyStripeSignature(rawBody, sigHeader, secret){
   if(!sigHeader || !secret) return false;
@@ -49,6 +50,10 @@ export async function onRequestPost(context){
         }
         const u = await env.DB.prepare('SELECT id, email, name FROM users WHERE id = ?').bind(userId).first();
         await recordEvent(env, { kind: 'payment_succeeded', user: u, detail: plan || 'pro', amount });
+        if(u && u.email){
+          const planLabel = ({ pro_monthly:'Pro — Monthly', pro_annual:'Pro — Annual', lifetime:'Lifetime', download_pass:'Download Pass' })[plan] || 'Resumry';
+          try { await sendEmail(env, { to: u.email, subject: 'Your Resumry receipt', html: receiptHtml(u.name || 'there', { plan: planLabel, amount, date: Date.now() }) }); } catch(_){}
+        }
       }
     } else if(event.type === 'customer.subscription.updated' || event.type === 'customer.subscription.deleted'){
       const subId = obj.id;
