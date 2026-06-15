@@ -20,8 +20,8 @@ export async function rateLimit(env, key, limit, windowSec) {
   return { allowed: true, remaining: limit - row.count - 1, resetIn: windowSec - (now - row.window_start) };
 }
 
-// Monthly AI quota by plan. Tune freely.
-export const AI_MONTHLY_QUOTA = { free: 5, pro: 1000, lifetime: 300 };
+// Monthly AI quota by plan. free & download-pass buyers get NO AI (per spec).
+export const AI_MONTHLY_QUOTA = { free: 0, download_pass: 0, pro: 1000, lifetime: 1000 };
 
 export function currentPeriod() {
   const d = new Date();
