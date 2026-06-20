@@ -26,6 +26,14 @@ export async function onRequestPost(context){
   const origin = new URL(request.url).origin;
   const mode = SUBSCRIPTION_PLANS.has(plan) ? 'subscription' : 'payment';
 
+  // Reuse the user's existing Stripe customer so every purchase — and every
+  // receipt — stays under one customer; create one for first-time purchases.
+  let customerId = null;
+  try {
+    const row = await env.DB.prepare('SELECT stripe_customer_id FROM users WHERE id = ?').bind(user.id).first();
+    customerId = row && row.stripe_customer_id;
+  } catch(_){}
+
   const form = new URLSearchParams();
   form.set('mode', mode);
   form.set('line_items[0][price]', priceId);
@@ -36,7 +44,12 @@ export async function onRequestPost(context){
   form.set('metadata[user_id]', user.id);
   form.set('metadata[plan]', plan);
   form.set('allow_promotion_codes', 'true');
-  if(user.email) form.set('customer_email', user.email);
+  if(customerId){
+    form.set('customer', customerId);
+  } else {
+    if(user.email) form.set('customer_email', user.email);
+    if(mode === 'payment') form.set('customer_creation', 'always');
+  }
   if(mode === 'subscription'){
     form.set('subscription_data[metadata][user_id]', user.id);
     form.set('subscription_data[metadata][plan]', plan);
