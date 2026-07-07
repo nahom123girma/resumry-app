@@ -2,8 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://resumry.com/</loc>
-    <lastmod>2026-06-20</lastmod>
+    <lastmod>2026-06-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://resumry.com/resume-templates/software-engineer</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- Add each SEO page here as it ships:
+       /resume-templates, /ats-resume-checker,
+       /resume-templates/{nurse,teacher,customer-service,internship},
+       /guides/{how-to-write-a-resume-summary,ats-friendly-resume} -->
 </urlset>
