@@ -1035,6 +1035,116 @@ body{font-family:var(--sans);font-weight:400}
 .ats-card-text b{font-size:1.05rem;display:block;margin-bottom:6px;color:var(--ink)}
 .ats-card-text p{color:var(--ink-2);font-size:.9rem;margin-bottom:10px;line-height:1.55}
 
+/* ── ATS report drawer (Phase 2 port — reads cf-ats-last) ── */
+.rzd-scrim{position:fixed;inset:0;background:rgba(21,36,79,.4);backdrop-filter:blur(2px);z-index:1200;opacity:0;pointer-events:none;transition:opacity .25s}
+.rzd-scrim.show{opacity:1;pointer-events:auto}
+.rzd{position:fixed;top:0;right:0;height:100vh;width:min(460px,95vw);z-index:1201;background:var(--paper);border-left:1px solid var(--line);box-shadow:-30px 0 60px -24px rgba(21,36,79,.45);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.3,.8,.3,1)}
+.rzd.open{transform:translateX(0)}
+.rzd-head{flex:none;display:flex;align-items:flex-start;gap:12px;padding:22px 24px 18px;border-bottom:1px solid var(--line)}
+.rzd-head .t{flex:1}
+.rzd-head h2{font-family:var(--serif);font-size:1.2rem;font-weight:700;color:var(--ink)}
+.rzd-head .tg{font-size:.78rem;color:var(--ink-3);margin-top:3px}
+.rzd-x{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:var(--ink-2);border:1px solid var(--line);background:var(--cream);flex:none;cursor:pointer}
+.rzd-x:hover{background:var(--paper-2)}
+.rzd-body{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:22px}
+.rzd-hero{display:flex;align-items:center;gap:18px}
+.rzd-ring{width:84px;height:84px;border-radius:50%;flex:none;display:grid;place-items:center;position:relative;background:conic-gradient(var(--orange) calc(var(--rzd-score,0)*1%),var(--paper-3) 0)}
+.rzd-ring .m{position:absolute;inset:7px;background:var(--paper);border-radius:50%}
+.rzd-ring b{position:relative;font-family:var(--serif);font-size:1.6rem;font-weight:800;color:var(--ink)}
+.rzd-verdict b{font-family:var(--serif);font-size:1rem;display:block;color:var(--ink)}
+.rzd-verdict span{font-size:.78rem;color:var(--ink-3)}
+.rzd-lbl{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:12px}
+.rzd-brk{display:flex;flex-direction:column;gap:13px}
+.rzd-brow{display:grid;grid-template-columns:1fr auto;gap:5px 10px;align-items:center}
+.rzd-brow .n{font-size:.84rem;color:var(--ink-2);font-weight:500}
+.rzd-brow .v{font-size:.78rem;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.rzd-bar{grid-column:1/-1;height:7px;border-radius:5px;background:var(--paper-3);overflow:hidden}
+.rzd-bar i{display:block;height:100%;border-radius:5px;background:var(--orange)}
+.rzd-bar i.hi{background:#0E8F5A}.rzd-bar i.lo{background:var(--danger)}
+.rzd-recs{display:flex;flex-direction:column;gap:10px}
+.rzd-sug{display:flex;gap:11px;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--cream)}
+.rzd-sug.sev-high{border-color:var(--danger-line);background:var(--danger-soft)}
+.rzd-sug.sev-medium{border-color:var(--warn-line);background:var(--warn-soft)}
+.rzd-sug.sev-low{border-color:rgba(14,143,90,.28);background:rgba(14,143,90,.10)}
+.rzd-sug .si{width:22px;height:22px;border-radius:50%;flex:none;display:grid;place-items:center;margin-top:1px}
+.rzd-sug.sev-high .si{color:var(--danger);background:rgba(185,28,28,.12)}
+.rzd-sug.sev-medium .si{color:var(--warn);background:var(--orange-soft)}
+.rzd-sug.sev-low .si{color:#0E8F5A;background:rgba(14,143,90,.14)}
+.rzd-sug .si svg{width:12px;height:12px}
+.rzd-sug b{font-size:.84rem;font-weight:700;display:block;margin-bottom:2px;color:var(--ink)}
+.rzd-sug p{font-size:.78rem;color:var(--ink-2);line-height:1.5;margin:0}
+.rzd-kw{display:flex;flex-wrap:wrap;gap:7px}
+.rzd-kw .chip{font-size:.78rem;font-weight:600;color:var(--orange-deep);background:var(--cream);border:1px dashed var(--warn-line);padding:6px 11px;border-radius:8px}
+.rzd-kwnote{font-size:.74rem;color:var(--ink-3);margin-top:9px}
+.rzd-empty{text-align:center;padding:34px 12px;color:var(--ink-3);font-size:.9rem;line-height:1.6}
+.rzd-foot{flex:none;padding:14px 24px;border-top:1px solid var(--line);display:flex;gap:10px}
+.rzd-foot .b{flex:1;height:44px;border-radius:11px;font-weight:700;font-size:.9rem;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+.rzd-foot .pri{color:#fff;background:linear-gradient(160deg,#ff7e52,var(--orange));box-shadow:0 10px 24px -10px rgba(254,93,43,.6)}
+.rzd-foot .sec{color:var(--ink);border:1px solid var(--line);background:var(--cream)}
+.rzd-foot .sec:hover{background:var(--paper-2)}
+
+/* in-editor ATS trigger (builder) */
+.rzb-ats{display:flex;align-items:center;gap:13px;margin:0 0 20px;padding:13px 15px;border-radius:14px;border:1px solid var(--line);background:var(--cream);cursor:pointer;width:100%;text-align:left;transition:border-color .15s,background .15s}
+.rzb-ats:hover{border-color:var(--orange);background:var(--paper-2)}
+.rzb-ring{width:40px;height:40px;border-radius:50%;flex:none;display:grid;place-items:center;position:relative;background:conic-gradient(var(--orange) calc(var(--rzb-score,0)*1%),var(--paper-3) 0)}
+.rzb-ring .m{position:absolute;inset:4px;border-radius:50%;background:var(--cream)}
+:root[data-theme="dark"] .rzb-ring .m{background:var(--paper-2)}
+.rzb-ring b{position:relative;font-family:var(--serif);font-weight:800;font-size:.95rem;color:var(--ink)}
+.rzb-ats .t{flex:1;min-width:0}
+.rzb-ats .t b{font-size:.9rem;color:var(--ink);display:block;margin-bottom:1px}
+.rzb-ats .t span{font-size:.78rem;color:var(--ink-3)}
+.rzb-ats .go{font-size:.8rem;font-weight:700;color:var(--orange-deep);display:inline-flex;align-items:center;gap:6px;flex:none}
+.rzb-ats .go svg{width:13px;height:13px}
+
+/* builder accordion sections */
+.rza-acc{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.rza-sec{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--cream)}
+.rza-head{display:flex;align-items:center;gap:11px;width:100%;padding:14px 16px;background:none;border:0;cursor:pointer;text-align:left;font-family:var(--sans)}
+.rza-head:hover{background:var(--paper-2)}
+.rza-dot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--paper-4);box-shadow:0 0 0 3px var(--paper-2)}
+.rza-dot.done{background:#0E8F5A;box-shadow:0 0 0 3px rgba(14,143,90,.16)}
+.rza-dot.partial{background:var(--orange);box-shadow:0 0 0 3px var(--orange-soft)}
+.rza-title{flex:1;font-weight:700;font-size:.95rem;color:var(--ink)}
+.rza-meta{font-size:.72rem;color:var(--ink-3);font-weight:600}
+.rza-chev{width:15px;height:15px;color:var(--ink-3);transition:transform .2s;flex:none}
+.rza-sec[data-rza-open="1"] .rza-chev{transform:rotate(180deg)}
+.rza-body{padding:2px 16px 18px;display:none}
+.rza-sec[data-rza-open="1"] .rza-body{display:block}
+
+/* template gallery overlay */
+.rzg-scrim{position:fixed;inset:0;background:rgba(11,20,40,.55);backdrop-filter:blur(3px);z-index:1300;opacity:0;pointer-events:none;transition:opacity .25s}
+.rzg-scrim.show{opacity:1;pointer-events:auto}
+.rzg{position:fixed;inset:3vh 3vw;z-index:1301;background:var(--paper);border:1px solid var(--line);border-radius:20px;box-shadow:0 40px 100px -30px rgba(11,20,40,.6);display:flex;flex-direction:column;transform:translateY(14px) scale(.99);opacity:0;pointer-events:none;transition:transform .28s cubic-bezier(.3,.8,.3,1),opacity .28s;overflow:hidden}
+.rzg.open{transform:none;opacity:1;pointer-events:auto}
+.rzg-top{flex:none;display:flex;align-items:flex-start;gap:14px;padding:22px 26px 16px;border-bottom:1px solid var(--line)}
+.rzg-top h2{font-family:var(--serif);font-size:1.4rem;font-weight:700;color:var(--ink)}
+.rzg-top p{font-size:.8rem;color:var(--ink-3);margin-top:3px;max-width:560px}
+.rzg-x{margin-left:auto;width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--cream);color:var(--ink-2);display:grid;place-items:center;cursor:pointer;flex:none;font-size:1rem}
+.rzg-x:hover{background:var(--paper-2)}
+.rzg-controls{flex:none;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 26px;border-bottom:1px solid var(--line)}
+.rzg-filters{display:flex;gap:7px;flex-wrap:wrap}
+.rzg-fpill{padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:var(--cream);color:var(--ink-2);font-size:.8rem;font-weight:600;cursor:pointer}
+.rzg-fpill[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.rzg-search{margin-left:auto;flex:1;min-width:180px;max-width:280px}
+.rzg-search input{width:100%;padding:9px 13px;border-radius:10px;border:1px solid var(--line);background:var(--cream);color:var(--ink);font-family:var(--sans);font-size:.85rem}
+.rzg-grid{flex:1;overflow-y:auto;padding:22px 26px;display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:18px;align-content:start}
+.rzg-card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--cream);cursor:pointer;display:flex;flex-direction:column;transition:border-color .15s,box-shadow .15s,transform .12s}
+.rzg-card:hover{border-color:var(--orange);box-shadow:0 14px 30px -16px rgba(254,93,43,.5);transform:translateY(-2px)}
+.rzg-card[data-active="1"]{border-color:var(--orange);box-shadow:0 0 0 2px var(--orange)}
+.rzg-thumb{height:228px;overflow:hidden;position:relative;background:#fff;border-bottom:1px solid var(--line)}
+.rzg-thumb .preview-doc{position:absolute;top:0;left:0;width:660px;transform:scale(.358);transform-origin:top left;pointer-events:none;box-shadow:none}
+.rzg-badge{position:absolute;top:10px;left:10px;z-index:2;font-size:.58rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:6px;background:var(--orange);color:#fff}
+.rzg-badge.prem{background:#15244F}
+.rzg-lock{position:absolute;top:10px;right:10px;z-index:2;width:24px;height:24px;border-radius:50%;background:rgba(21,36,79,.82);color:#fff;display:grid;place-items:center}
+.rzg-lock svg{width:12px;height:12px}
+.rzg-meta{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rzg-meta b{font-size:.88rem;color:var(--ink);font-weight:700;display:block}
+.rzg-meta .cat{font-size:.68rem;color:var(--ink-3);letter-spacing:.06em}
+.rzg-ats{font-size:.74rem;font-weight:700;color:#0E8F5A;display:flex;align-items:center;gap:5px;flex:none}
+.rzg-ats i{width:7px;height:7px;border-radius:50%;background:#0E8F5A;display:inline-block}
+.rzg-empty{grid-column:1/-1;text-align:center;color:var(--ink-3);padding:44px;font-size:.9rem}
+@media (max-width:600px){.rzg{inset:0;border-radius:0}.rzg-search{max-width:none;margin-left:0;order:3;width:100%}}
+
 /* Doc rows — fully interactive */
 .doc-item{cursor:pointer;transition:transform .12s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease}
 .doc-item:hover,.doc-item:focus-visible{transform:translateY(-1px);box-shadow:0 6px 18px -8px rgba(21,36,79,.18);border-color:var(--orange);outline:none}
@@ -1666,7 +1776,7 @@ body.dh-active .skip-link{display:none}
 .dh-nav-links a.dh-nav-cta{color:#F0F1F3;background:#FE5D2B;margin-left:6px;transition:transform .15s, background .15s}
 .dh-nav-links a.dh-nav-cta:hover{background:#FF6E3F;transform:translateY(-1px)}
 .dh-stage{position:relative;display:flex;align-items:center;justify-content:flex-end;min-height:100vh;padding:0 8% 0 6%;z-index:10}
-.dh-scene,.dh-sub-scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;padding:0 8% 0 6%;transition:opacity .5s, transform .5s cubic-bezier(.2,.8,.2,1)}
+.dh-scene,.dh-sub-scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;padding:96px 8% 64px 6%;transition:opacity .5s, transform .5s cubic-bezier(.2,.8,.2,1)}
 .dh-scene-inner,.dh-sub-inner{display:flex;flex-direction:column;align-items:flex-end;gap:28px;width:min(760px, 62vw)}
 .dh-stage[data-dh-state="home"] .dh-scene{opacity:1;pointer-events:auto}
 .dh-stage[data-dh-state="resume"] .dh-scene{opacity:0;transform:translateY(-12px);pointer-events:none}
@@ -1766,6 +1876,46 @@ body.dh-active .skip-link{display:none}
 @media (max-width:600px){
   .dh-social-proof{display:none}
 }
+
+/* ── Hero conversion upgrades: primary CTA, micro-trust, left-side resume preview ── */
+.dh-cta-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end;margin-top:4px;opacity:0;animation:dh-hero-enter .55s cubic-bezier(.2,.8,.2,1) .16s forwards}
+.dh-cta-primary{display:inline-flex;align-items:center;gap:10px;background:#FE5D2B;color:#1a0f08;font-family:'Inter',sans-serif;font-weight:700;font-size:1rem;border:0;border-radius:12px;padding:15px 26px;cursor:pointer;transition:transform .15s, background .15s, box-shadow .2s;box-shadow:0 10px 28px -10px rgba(254,93,43,.7)}
+.dh-cta-primary:hover{background:#FF6E3F;transform:translateY(-2px);box-shadow:0 16px 34px -10px rgba(254,93,43,.85)}
+.dh-cta-primary svg{width:16px;height:16px}
+.dh-cta-secondary{display:inline-flex;align-items:center;gap:7px;color:rgba(240,241,243,0.78);font-family:'Inter',sans-serif;font-weight:600;font-size:.95rem;text-decoration:none;padding:14px 18px;border-radius:12px;border:1px solid rgba(255,255,255,0.12);transition:background .15s,border-color .15s,color .15s;cursor:pointer}
+.dh-cta-secondary:hover{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.24);color:#fff}
+.dh-micro{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;color:rgba(240,241,243,0.40);opacity:0;animation:dh-hero-enter .55s cubic-bezier(.2,.8,.2,1) .22s forwards}
+.dh-micro b{color:#3FCF8E;font-weight:500}
+.dh-micro .sep{opacity:.45}
+/* left-side animated résumé preview */
+.dh-preview{position:absolute;left:5%;top:50%;transform:translateY(-50%) rotate(-4deg);width:330px;z-index:14;pointer-events:none;opacity:0;transition:opacity .5s ease .15s, transform .5s ease}
+.dh-stage[data-dh-state="home"] .dh-preview{opacity:1;animation:dh-float 7s ease-in-out infinite}
+.dh-stage:not([data-dh-state="home"]) .dh-preview{opacity:0;transform:translateY(-50%) rotate(-4deg) scale(.96)}
+@keyframes dh-float{0%,100%{transform:translateY(-50%) rotate(-4deg)}50%{transform:translateY(calc(-50% - 12px)) rotate(-4deg)}}
+.dh-doc{background:#fbf7f0;color:#1a2138;border-radius:14px;padding:24px;box-shadow:0 40px 90px -30px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.05);position:relative}
+.dh-doc-name{font-size:1.12rem;font-weight:800;letter-spacing:-.01em}
+.dh-doc-role{font-size:.78rem;color:#FE5D2B;font-weight:700;margin-top:1px}
+.dh-doc-meta{font-family:'JetBrains Mono',monospace;font-size:.54rem;color:#9097a8;letter-spacing:.04em;margin-top:6px}
+.dh-doc hr{border:0;border-top:1px solid #e3e7f0;margin:14px 0}
+.dh-doc-lbl{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.16em;color:#aeb4c2;margin-bottom:9px;text-transform:uppercase}
+.dh-bullet{display:flex;gap:8px;align-items:flex-start;font-size:.72rem;line-height:1.45;font-weight:600;color:#16243f;min-height:2.3em}
+.dh-bullet::before{content:"";width:5px;height:5px;border-radius:50%;background:#FE5D2B;margin-top:6px;flex:none}
+.dh-bullet span{transition:opacity .4s}
+.dh-bar{height:7px;border-radius:4px;background:#e4e8f0;margin:8px 0}
+.dh-bar.s{width:60%}.dh-bar.m{width:84%}.dh-bar.l{width:94%}
+.dh-ats{position:absolute;top:-16px;right:-18px;background:#0e1f17;border:1px solid rgba(47,191,113,.5);border-radius:13px;padding:9px 13px;display:flex;align-items:center;gap:9px;box-shadow:0 18px 40px -16px rgba(0,0,0,.7);transform:rotate(4deg)}
+.dh-ats-ring{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;position:relative;background:conic-gradient(#2fbf71 var(--p,94%),rgba(255,255,255,.1) 0)}
+.dh-ats-ring::after{content:"";position:absolute;inset:4px;border-radius:50%;background:#0e1f17}
+.dh-ats-ring b{position:relative;z-index:2;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;color:#7ef0b4}
+.dh-ats-t small{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.12em;color:#5f8f76;text-transform:uppercase}
+.dh-ats-t span{display:block;font-size:.74rem;font-weight:800;color:#dff7ea}
+.dh-chip{position:absolute;bottom:14px;left:-24px;background:#FE5D2B;color:#1a0f08;font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.06em;font-weight:600;text-transform:uppercase;padding:6px 10px;border-radius:8px;transform:rotate(-3deg);box-shadow:0 14px 30px -12px rgba(254,93,43,.8)}
+@media (max-width:1080px){.dh-preview{display:none}}
+@media (max-width:880px){
+  .dh-cta-row,.dh-micro{justify-content:flex-start}
+  .dh-cta-primary{flex:1;justify-content:center;min-width:200px}
+}
+@media (prefers-reduced-motion:reduce){.dh-preview,.dh-cta-row,.dh-micro{animation:none !important}}
 
 /* ═══════════════════════════════════════════════════════════════
    OBSIDIAN — site-wide redesign skin
@@ -2724,6 +2874,57 @@ select:focus-visible, [role="button"]:focus-visible, [tabindex]:focus-visible{
 .preview-doc.tpl-creative .skills span{ background:var(--rp-accent) !important; color:#fff !important; border:0 !important; }
 .preview-doc.tpl-creative{ padding-bottom:30px !important; }
 
+/* ───── Gallery port · batch 1 — single-column templates on the live preview DOM ───── */
+/* modern-ats — clean Inter, thin accent rule under name, uppercase headings */
+.preview-doc.tpl-modern-ats{ font-family:'Inter','Helvetica Neue',Arial,sans-serif !important; padding:44px 46px !important; }
+.preview-doc.tpl-modern-ats h2{ font-size:1.9rem !important; font-weight:700 !important; letter-spacing:-.02em !important; color:#10213f !important; margin-bottom:3px !important; }
+.preview-doc.tpl-modern-ats .role-line{ color:var(--rp-accent) !important; font-weight:600 !important; font-size:.92rem !important; text-transform:none !important; letter-spacing:0 !important; margin-bottom:10px !important; }
+.preview-doc.tpl-modern-ats .meta{ border-bottom:2px solid var(--rp-accent) !important; padding-bottom:12px !important; margin-bottom:22px !important; font-size:.78rem !important; gap:16px !important; }
+.preview-doc.tpl-modern-ats h3{ font-size:.74rem !important; letter-spacing:.16em !important; text-transform:uppercase !important; font-weight:700 !important; color:#10213f !important; margin:22px 0 10px !important; }
+.preview-doc.tpl-modern-ats .skills span{ background:color-mix(in srgb,var(--rp-accent) 12%,#fff) !important; border:0 !important; color:#284066 !important; }
+
+/* corporate-ats — serif name, navy underlined headings, conservative */
+.preview-doc.tpl-corporate-ats{ font-family:Georgia,'Times New Roman',serif !important; padding:46px 48px !important; color:#1c2742 !important; }
+.preview-doc.tpl-corporate-ats h2{ font-weight:700 !important; font-size:1.95rem !important; color:#15244F !important; letter-spacing:-.01em !important; }
+.preview-doc.tpl-corporate-ats .role-line{ color:#44557a !important; font-style:italic !important; font-size:.95rem !important; text-transform:none !important; letter-spacing:0 !important; margin-bottom:12px !important; }
+.preview-doc.tpl-corporate-ats .meta{ font-size:.78rem !important; border-bottom:1px solid #15244F !important; padding-bottom:12px !important; margin-bottom:22px !important; }
+.preview-doc.tpl-corporate-ats h3{ font-family:Georgia,serif !important; font-size:.96rem !important; font-weight:700 !important; color:#15244F !important; border-bottom:1px solid #c9d2e3 !important; padding-bottom:4px !important; margin:22px 0 10px !important; letter-spacing:0 !important; text-transform:none !important; }
+.preview-doc.tpl-corporate-ats .skills span{ background:#f1f4fa !important; border:1px solid #d8e0ee !important; color:#2c3a5c !important; }
+
+/* professional-ats — neutral, recruiter-safe, accent rule on headings */
+.preview-doc.tpl-professional-ats{ font-family:'Inter','Helvetica Neue',Arial,sans-serif !important; padding:42px 46px !important; }
+.preview-doc.tpl-professional-ats h2{ font-size:1.8rem !important; font-weight:700 !important; color:#0f1b33 !important; }
+.preview-doc.tpl-professional-ats .role-line{ color:#3a4a66 !important; font-weight:600 !important; text-transform:none !important; letter-spacing:0 !important; font-size:.9rem !important; margin-bottom:12px !important; }
+.preview-doc.tpl-professional-ats .meta{ font-size:.78rem !important; border-bottom:1px solid #d6dce5 !important; padding-bottom:12px !important; margin-bottom:22px !important; }
+.preview-doc.tpl-professional-ats h3{ font-size:.82rem !important; font-weight:700 !important; letter-spacing:.1em !important; text-transform:uppercase !important; color:var(--rp-accent) !important; margin:20px 0 9px !important; }
+.preview-doc.tpl-professional-ats .skills span{ background:#f5f6f8 !important; border:1px solid #e2e6ee !important; color:#33415c !important; }
+
+/* minimal-gray — grayscale, light weight, airy */
+.preview-doc.tpl-minimal-gray{ font-family:'Inter','Helvetica Neue',Arial,sans-serif !important; padding:48px 46px !important; color:#3a3f47 !important; }
+.preview-doc.tpl-minimal-gray h2{ font-weight:400 !important; font-size:2.1rem !important; letter-spacing:-.02em !important; color:#222 !important; }
+.preview-doc.tpl-minimal-gray .role-line{ color:#777 !important; text-transform:uppercase !important; letter-spacing:.18em !important; font-size:.78rem !important; font-weight:500 !important; margin-bottom:18px !important; }
+.preview-doc.tpl-minimal-gray .meta{ border-bottom:none !important; font-size:.76rem !important; color:#888 !important; margin-bottom:28px !important; gap:16px !important; }
+.preview-doc.tpl-minimal-gray h3{ font-size:.68rem !important; letter-spacing:.22em !important; text-transform:uppercase !important; font-weight:600 !important; color:#555 !important; margin:28px 0 12px !important; }
+.preview-doc.tpl-minimal-gray .skills span{ background:transparent !important; border:none !important; padding:0 !important; color:#444 !important; }
+.preview-doc.tpl-minimal-gray .skills span:not(:last-child)::after{ content:" / "; color:#bbb; margin:0 5px; }
+
+/* executive-black — full-width black header band, serif body */
+.preview-doc.tpl-executive-black{ font-family:Georgia,'Times New Roman',serif !important; padding:0 0 30px !important; color:#222 !important; }
+.preview-doc.tpl-executive-black h2{ background:#111418 !important; color:#fff !important; font-size:2rem !important; font-weight:700 !important; padding:30px 44px 4px !important; margin:0 !important; }
+.preview-doc.tpl-executive-black .role-line{ background:#111418 !important; color:#c9b072 !important; padding:0 44px 28px !important; margin:0 !important; letter-spacing:.12em !important; text-transform:uppercase !important; font-size:.82rem !important; font-family:'Inter',sans-serif !important; }
+.preview-doc.tpl-executive-black .meta{ padding:18px 44px 14px !important; margin:0 0 6px !important; border-bottom:1px solid #e2e2e2 !important; font-size:.78rem !important; }
+.preview-doc.tpl-executive-black > *:not(h2):not(.role-line):not(.meta){ padding-left:44px !important; padding-right:44px !important; }
+.preview-doc.tpl-executive-black h3{ font-family:Georgia,serif !important; font-size:1rem !important; font-weight:700 !important; color:#111418 !important; border-bottom:2px solid #c9b072 !important; padding-bottom:4px !important; margin:22px 0 10px !important; letter-spacing:0 !important; text-transform:none !important; }
+.preview-doc.tpl-executive-black .skills span{ background:#f3f1ea !important; border:1px solid #ddd6c4 !important; color:#3a3526 !important; }
+
+/* horizon — modern accent top border + accent headings */
+.preview-doc.tpl-horizon{ font-family:'Inter','Helvetica Neue',Arial,sans-serif !important; padding:40px 46px !important; border-top:6px solid var(--rp-accent) !important; }
+.preview-doc.tpl-horizon h2{ font-size:1.85rem !important; font-weight:800 !important; letter-spacing:-.02em !important; color:#11213d !important; }
+.preview-doc.tpl-horizon .role-line{ color:var(--rp-accent) !important; font-weight:700 !important; text-transform:none !important; letter-spacing:0 !important; font-size:.92rem !important; margin-bottom:12px !important; }
+.preview-doc.tpl-horizon .meta{ font-size:.78rem !important; margin-bottom:22px !important; border-bottom:1px solid #e1e5ec !important; padding-bottom:12px !important; }
+.preview-doc.tpl-horizon h3{ font-size:.78rem !important; font-weight:800 !important; letter-spacing:.12em !important; text-transform:uppercase !important; color:var(--rp-accent) !important; margin:20px 0 9px !important; }
+.preview-doc.tpl-horizon .skills span{ background:color-mix(in srgb,var(--rp-accent) 10%,#fff) !important; border:1px solid color-mix(in srgb,var(--rp-accent) 30%,#fff) !important; color:#27405f !important; }
+
 /* Dashboard swatches for new variants */
 .template-preview.colorful::before{ background:var(--rp-accent,#FE5D2B); height:8px; width:100%; left:0; top:0; }
 .template-preview.professional::before{ background:#15244F; height:6px; width:45%; }
@@ -3021,6 +3222,13 @@ label.has-review{position:relative}
           <div class="dh-eyebrow"><span class="dh-eyebrow-dot" aria-hidden="true"></span>Two tools, one workspace</div>
           <h1 class="dh-title">Build resumes.<br/>Draft letters.<br/><span class="dh-title-accent">Land roles.</span></h1>
           <p class="dh-subtitle">A single AI-powered workspace for the documents that get you hired.</p>
+          <div class="dh-cta-row">
+            <button class="dh-cta-primary" type="button" data-dh-card="resume" aria-label="Build my resume — free">Build my resume — free
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="dh-cta-secondary" type="button" id="dhExploreBtn" aria-label="Explore all tools">Explore tools</button>
+          </div>
+          <div class="dh-micro"><b>✓ Free to start</b><span class="sep">·</span><span>No credit card</span><span class="sep">·</span><span>PDF &amp; Word export</span></div>
           <div class="dh-cards">
             <button class="dh-card" type="button" data-dh-card="resume" aria-label="Open Resume Builder">
               <div class="dh-card-index"><span>01</span><span class="dh-card-tag">Builder</span></div>
@@ -3036,7 +3244,7 @@ label.has-review{position:relative}
               </div>
               <p>ATS-ready templates with AI rewrites that turn duties into measured impact.</p>
               <div class="dh-card-footer">
-                <span class="dh-card-action">New · Import · Export</span>
+                <span class="dh-card-action">New · Import · ATS score</span>
                 <div class="dh-card-arrow" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               </div>
             </button>
@@ -3053,7 +3261,7 @@ label.has-review{position:relative}
               </div>
               <p>AI-tailored cover letters from any job description — your voice, no writer's block.</p>
               <div class="dh-card-footer">
-                <span class="dh-card-action">Draft · Polish · Tone</span>
+                <span class="dh-card-action">Draft · Tailor · Tone</span>
                 <div class="dh-card-arrow" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               </div>
             </button>
@@ -3089,6 +3297,22 @@ label.has-review{position:relative}
           </div>
         </div>
       </div>
+      <div class="dh-preview" aria-hidden="true">
+        <div class="dh-doc">
+          <div class="dh-ats"><div class="dh-ats-ring" id="dhRing"><b id="dhAtsNum">94</b></div><div class="dh-ats-t"><small>ATS match</small><span id="dhAtsLabel">Strong</span></div></div>
+          <div class="dh-doc-name">Jordan Avery</div>
+          <div class="dh-doc-role">Senior Product Designer</div>
+          <div class="dh-doc-meta">SAN FRANCISCO · JORDAN@AVERY.DESIGN</div>
+          <hr>
+          <div class="dh-doc-lbl">Experience</div>
+          <div class="dh-bullet"><span id="dhBullet">Grew activation 38% by redesigning onboarding</span></div>
+          <div class="dh-bar m"></div><div class="dh-bar l"></div><div class="dh-bar s"></div>
+          <hr>
+          <div class="dh-doc-lbl">Skills</div>
+          <div class="dh-bar l"></div><div class="dh-bar m"></div>
+          <div class="dh-chip">✦ AI rewrite</div>
+        </div>
+      </div>
     </div>
     <footer class="dh-footer">
       <div class="dh-footer-left">
@@ -3098,14 +3322,14 @@ label.has-review{position:relative}
       </div>
       <div class="dh-footer-right">© 2026 Resumry AI</div>
     </footer>
-    <div class="dh-social-proof" id="dhSocialProof" aria-live="polite" aria-label="Activity feed (design preview)"></div>
+    <!-- social-proof activity feed removed (was placeholder/demo data) -->
   </div>
 
   <div class="logos">
     <div class="container row">
-      <div class="label">Helping people land roles at</div>
+      <div class="label">Built to beat the ATS platforms employers actually use</div>
       <div class="marks">
-        <span>Stripe</span><span>Notion</span><span>Atlassian</span><span>Shopify</span><span>Figma</span><span>Airbnb</span>
+        <span>Workday</span><span>Greenhouse</span><span>Lever</span><span>iCIMS</span><span>Taleo</span><span>Ashby</span>
       </div>
     </div>
   </div>
@@ -3301,6 +3525,17 @@ label.has-review{position:relative}
           </div>
           <p class="sub">Fields update the preview live. Skip anything you'd rather come back to.</p>
 
+          <button type="button" class="rzb-ats" id="rzbAtsBar" aria-label="Open ATS report">
+            <span class="rzb-ring" id="rzbRing" style="--rzb-score:0"><span class="m"></span><b id="rzbScore">—</b></span>
+            <span class="t"><b id="rzbHeadline">Check your ATS score</b><span id="rzbSub">See how this résumé matches a job — without leaving the editor.</span></span>
+            <span class="go">View report <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+
+          <div class="rza-acc" id="rzaAcc">
+          <div class="rza-sec" data-rza-sec="personal" data-rza-open="1">
+            <button type="button" class="rza-head" aria-expanded="true"><span class="rza-dot" data-rza-status></span><span class="rza-title">Personal information</span><span class="rza-meta">Empty</span><svg class="rza-chev" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="rza-body">
+
           <div class="row2">
             <div class="field" data-validate="required,maxlen:80,safe">
               <label for="rf-name">Full name<span class="req" aria-hidden="true">*</span></label>
@@ -3333,12 +3568,24 @@ label.has-review{position:relative}
             <div class="error-msg" id="rf-location-err" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M7 4v3M7 9v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span></span></div>
           </div>
 
+            </div>
+          </div>
+          <div class="rza-sec" data-rza-sec="summary" data-rza-open="0">
+            <button type="button" class="rza-head" aria-expanded="false"><span class="rza-dot" data-rza-status></span><span class="rza-title">Professional summary</span><span class="rza-meta">Empty</span><svg class="rza-chev" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="rza-body">
+
           <div class="field" data-validate="maxlen:500,safe">
             <label for="rf-summary">Professional summary</label>
             <textarea id="rf-summary" data-field="summary" maxlength="500" aria-describedby="rf-summary-help rf-summary-err">Senior product designer with 8+ years shipping enterprise SaaS. Led design systems work at two Series-B startups; comfortable across discovery, prototyping, and ship-it execution.</textarea>
             <div class="help" id="rf-summary-help"><span>2–4 sentences works best.</span><span class="count" data-count-for="rf-summary">0 / 500</span></div>
             <div class="error-msg" id="rf-summary-err" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M7 4v3M7 9v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span></span></div>
           </div>
+
+            </div>
+          </div>
+          <div class="rza-sec" data-rza-sec="experience" data-rza-open="0">
+            <button type="button" class="rza-head" aria-expanded="false"><span class="rza-dot" data-rza-status></span><span class="rza-title">Experience</span><span class="rza-meta">Empty</span><svg class="rza-chev" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="rza-body">
 
           <fieldset style="border:0;padding:0;margin:0 0 16px">
             <legend style="font-size:.82rem;color:var(--ink-2);margin-bottom:8px;font-weight:500">Experience<span class="req" aria-hidden="true">*</span></legend>
@@ -3349,6 +3596,12 @@ label.has-review{position:relative}
             </button>
           </fieldset>
 
+            </div>
+          </div>
+          <div class="rza-sec" data-rza-sec="skills" data-rza-open="0">
+            <button type="button" class="rza-head" aria-expanded="false"><span class="rza-dot" data-rza-status></span><span class="rza-title">Skills</span><span class="rza-meta">Empty</span><svg class="rza-chev" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="rza-body">
+
           <div class="field" data-validate="required,minlen-skills:1,safe">
             <label for="rf-skill-input">Skills<span class="req" aria-hidden="true">*</span></label>
             <div class="skill-chip-input" id="skillChipInput">
@@ -3358,10 +3611,19 @@ label.has-review{position:relative}
             <div class="error-msg" id="rf-skills-err" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M7 4v3M7 9v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span></span></div>
           </div>
 
-          <div class="field" data-validate="maxlen:200,safe">
+            </div>
+          </div>
+          <div class="rza-sec" data-rza-sec="education" data-rza-open="0" hidden>
+            <div class="rza-body">
+          <div class="field" data-validate="maxlen:200,safe" hidden>
             <label for="rf-education">Education</label>
-            <input id="rf-education" type="text" data-field="education" value="BFA, Visual Design — Rhode Island School of Design, 2014" maxlength="200" aria-describedby="rf-education-err" />
+            <input id="rf-education" type="text" data-field="education" value="" maxlength="200" aria-describedby="rf-education-err" />
             <div class="error-msg" id="rf-education-err" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M7 4v3M7 9v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span></span></div>
+          </div>
+            </div>
+          </div>
+
+          <div id="dynSections"></div>
           </div>
 
           <div class="builder-actions">
@@ -3404,6 +3666,7 @@ label.has-review{position:relative}
             <div class="rpc-sections" id="rpcSections" aria-label="Section order"><span class="rpc-label">Order:</span></div>
           </div>
           <div class="preview-toolbar">
+            <button type="button" class="tpill" id="rzgOpen" style="font-weight:700;border-color:var(--orange);color:var(--orange-deep)">⊞ Browse all templates</button>
             <div class="template-pills" role="group" aria-label="Resume template">
               <button class="tpill" data-tpl="modern" aria-pressed="true" type="button">Modern</button>
               <button class="tpill" data-tpl="classic" aria-pressed="false" type="button">Classic</button>
@@ -3415,6 +3678,12 @@ label.has-review{position:relative}
               <button class="tpill" data-tpl="colorful" aria-pressed="false" type="button">Colorful</button>
               <button class="tpill" data-tpl="professional" aria-pressed="false" type="button">Professional</button>
               <button class="tpill" data-tpl="creative" aria-pressed="false" type="button">Creative</button>
+              <button class="tpill" data-tpl="modern-ats" aria-pressed="false" type="button" hidden>Modern ATS</button>
+              <button class="tpill" data-tpl="professional-ats" aria-pressed="false" type="button" hidden>Professional ATS</button>
+              <button class="tpill" data-tpl="corporate-ats" aria-pressed="false" type="button" hidden>Corporate ATS</button>
+              <button class="tpill" data-tpl="minimal-gray" aria-pressed="false" type="button" hidden>Minimal Gray</button>
+              <button class="tpill" data-tpl="executive-black" aria-pressed="false" type="button" hidden>Executive Black</button>
+              <button class="tpill" data-tpl="horizon" aria-pressed="false" type="button" hidden>Horizon</button>
             </div>
             <span class="eyebrow" style="margin:0">Live preview</span>
           </div>
@@ -4977,7 +5246,7 @@ function applyPlanUi(){
   if(dashPlanLabel) dashPlanLabel.textContent = PLAN_LABEL[userPlan] + ' plan';
 
   // 4. Template pills — Modern is free; all others lock for Free
-  const PRO_TEMPLATES = ['classic','bold','minimal','compact','technical','elegant','colorful','professional','creative'];
+  const PRO_TEMPLATES = ['classic','bold','minimal','compact','technical','elegant','colorful','professional','creative','executive-black'];
   $$('.tpill').forEach(p => {
     const tpl = p.dataset.tpl;
     const requiresPro = PRO_TEMPLATES.includes(tpl);
@@ -5671,6 +5940,14 @@ const DEFAULT_RESUME = {
     }
   ],
   skills: ['Figma','Design Systems','Prototyping','User Research','Strategy','Workshop Facilitation'],
+  educationEntries: [],
+  projects: [],
+  certifications: [],
+  volunteer: [],
+  awards: [],
+  languages: [],
+  publications: [],
+  references: [],
   template: 'modern'
 };
 
@@ -5723,11 +6000,34 @@ function normalizeResumeData(d){
     }));
   }
   if(!merged.customize || typeof merged.customize !== 'object') merged.customize = {};
-  merged.customize = Object.assign({ accent:'#FE5D2B', font:'sans', density:'normal', paper:'letter', order:['summary','experience','skills','education'] }, merged.customize);
-  if(!Array.isArray(merged.customize.order) || merged.customize.order.length !== 4) merged.customize.order = ['summary','experience','skills','education'];
+  merged.customize = Object.assign({ accent:'#FE5D2B', font:'sans', density:'normal', paper:'letter', order:['summary','experience','education','skills'] }, merged.customize);
+  const ALL_SECTIONS = ['summary','experience','education','skills','projects','certifications','volunteer','awards','languages','publications','references'];
+  let _ord = Array.isArray(merged.customize.order) ? merged.customize.order.filter(k => ALL_SECTIONS.includes(k)) : [];
+  _ord = _ord.filter((k,i) => _ord.indexOf(k) === i);            // dedupe
+  ALL_SECTIONS.forEach(k => { if(_ord.indexOf(k) < 0) _ord.push(k); });  // append any missing so new sections appear
+  merged.customize.order = _ord;
+  if(!Array.isArray(merged.customize.removedSections)) merged.customize.removedSections = [];
+  merged.customize.removedSections = merged.customize.removedSections.filter(k => ALL_SECTIONS.includes(k));
   if(!Array.isArray(merged.skills)) merged.skills = [];
   merged.skills = merged.skills.filter(s => typeof s === 'string').slice(0, 30);
   if(!['modern','classic','bold','minimal','compact','technical','elegant','colorful','professional','creative'].includes(merged.template)) merged.template = 'modern';
+
+  /* Dynamic sections (unlimited entries per section). Additive + backward-compatible:
+     old résumés keep working; the legacy single education string migrates into one entry. */
+  ['educationEntries','projects','certifications','volunteer','awards','languages','publications','references'].forEach(k => { if(!Array.isArray(merged[k])) merged[k] = []; });
+  if(merged.educationEntries.length === 0 && typeof merged.education === 'string' && merged.education.trim()){
+    merged.educationEntries = [{ id: uid('edu'), school:'', degree:'', field:'', location:'', start:'', end:'', gpa:'', description: merged.education.trim(), present:false }];
+  }
+  const S = (v) => (typeof v === 'string' ? v : '');
+  merged.educationEntries = merged.educationEntries.map(e => ({ id:e.id||uid('edu'), school:S(e.school), degree:S(e.degree), field:S(e.field), location:S(e.location), start:S(e.start), end:S(e.end), gpa:S(e.gpa), description:S(e.description), present:!!e.present }));
+  merged.projects       = merged.projects.map(e => ({ id:e.id||uid('prj'), name:S(e.name), role:S(e.role), link:S(e.link), description:S(e.description) }));
+  merged.certifications = merged.certifications.map(e => ({ id:e.id||uid('crt'), name:S(e.name), issuer:S(e.issuer), date:S(e.date) }));
+  merged.volunteer      = merged.volunteer.map(e => ({ id:e.id||uid('vol'), org:S(e.org), role:S(e.role), start:S(e.start), end:S(e.end), present:!!e.present, description:S(e.description) }));
+  merged.awards         = merged.awards.map(e => ({ id:e.id||uid('awd'), name:S(e.name), issuer:S(e.issuer), date:S(e.date), description:S(e.description) }));
+  merged.languages      = merged.languages.map(e => ({ id:e.id||uid('lng'), language:S(e.language), proficiency:S(e.proficiency) }));
+  merged.publications   = merged.publications.map(e => ({ id:e.id||uid('pub'), title:S(e.title), publisher:S(e.publisher), date:S(e.date), link:S(e.link) }));
+  merged.references     = merged.references.map(e => ({ id:e.id||uid('ref'), name:S(e.name), relationship:S(e.relationship), contact:S(e.contact) }));
+
   return merged;
 }
 function normalizeResumeRecord(r){
@@ -5895,6 +6195,7 @@ function bindResumeForm(){
       saveResumeState();
     });
   });
+  if(typeof renderAllDynEditors === 'function') renderAllDynEditors();
 }
 
 /* ───────────────────── EXPERIENCE BLOCKS ───────────────────── */
@@ -6219,9 +6520,10 @@ function updatePreview(){
   // Template
   const preview = $('#resumePreview');
   if(preview){
-    preview.classList.remove('tpl-modern','tpl-classic','tpl-bold','tpl-minimal','tpl-compact','tpl-technical','tpl-elegant','tpl-colorful','tpl-professional','tpl-creative');
-    preview.classList.add('tpl-' + resumeState.template);
+    Array.from(preview.classList).filter(c => c.indexOf('tpl-')===0).forEach(c => preview.classList.remove(c));
+    preview.classList.add('tpl-' + (resumeState.template || 'modern'));
   }
+  renderDynPreview();
   applyCustomize();
 }
 
@@ -6239,6 +6541,193 @@ function applyCustomize(){
   pv.classList.add('rp-density-'+c.density);
   c.order.forEach(key => { const s = pv.querySelector('.rp-section[data-section="'+key+'"]'); if(s) pv.appendChild(s); });
 }
+/* ═══════════════════ DYNAMIC SECTIONS ENGINE ═══════════════════
+   Unlimited entries for education + projects/certifications/etc.
+   Reuses the existing .exp-block editor markup and the .item preview
+   vocabulary verbatim, so templates + PDF/DOCX export stay identical. */
+const DYN = {
+  education: { key:'educationEntries', label:'Education', add:'Add education',
+    fields:[['degree','Degree'],['field','Field of study'],['school','School / university'],['location','Location'],['__dates','start','end'],['gpa','GPA (optional)'],['description','Description (optional)','area']],
+    blank:()=>({id:uid('edu'),school:'',degree:'',field:'',location:'',start:'',end:'',gpa:'',description:'',present:false}),
+    title:e=>[e.degree,e.field].filter(Boolean).join(', ')||e.school||'Education',
+    pv:e=>({t:[e.degree,e.field].filter(Boolean).join(', '), o:[e.school,e.location].filter(Boolean).join(' · ')+(e.gpa?'  ·  GPA '+e.gpa:''), w:dynRange(e), b:e.description}) },
+  projects: { key:'projects', label:'Projects', add:'Add project',
+    fields:[['name','Project name'],['role','Your role'],['link','Link'],['description','Description','area']],
+    blank:()=>({id:uid('prj'),name:'',role:'',link:'',description:''}),
+    title:e=>e.name||'Project',
+    pv:e=>({t:e.name, o:[e.role,e.link].filter(Boolean).join(' · '), w:'', b:e.description}) },
+  certifications: { key:'certifications', label:'Certifications', add:'Add certification',
+    fields:[['name','Certification'],['issuer','Issuer'],['date','Date','','ph:2024']],
+    blank:()=>({id:uid('crt'),name:'',issuer:'',date:''}),
+    title:e=>e.name||'Certification',
+    pv:e=>({t:e.name, o:e.issuer, w:e.date, b:''}) },
+  volunteer: { key:'volunteer', label:'Volunteer Experience', add:'Add role',
+    fields:[['role','Role'],['org','Organization'],['__dates','start','end'],['description','Description','area']],
+    blank:()=>({id:uid('vol'),org:'',role:'',start:'',end:'',present:false,description:''}),
+    title:e=>[e.role,e.org].filter(Boolean).join(' · ')||'Volunteer',
+    pv:e=>({t:e.role, o:e.org, w:dynRange(e), b:e.description}) },
+  awards: { key:'awards', label:'Awards', add:'Add award',
+    fields:[['name','Award'],['issuer','Issuer'],['date','Date'],['description','Description (optional)','area']],
+    blank:()=>({id:uid('awd'),name:'',issuer:'',date:'',description:''}),
+    title:e=>e.name||'Award',
+    pv:e=>({t:e.name, o:e.issuer, w:e.date, b:e.description}) },
+  languages: { key:'languages', label:'Languages', add:'Add language',
+    fields:[['language','Language'],['proficiency','Proficiency']],
+    blank:()=>({id:uid('lng'),language:'',proficiency:''}),
+    title:e=>[e.language,e.proficiency].filter(Boolean).join(' — ')||'Language',
+    pv:e=>({t:e.language, o:e.proficiency, w:'', b:''}) },
+  publications: { key:'publications', label:'Publications', add:'Add publication',
+    fields:[['title','Title'],['publisher','Publisher'],['date','Date'],['link','Link']],
+    blank:()=>({id:uid('pub'),title:'',publisher:'',date:'',link:''}),
+    title:e=>e.title||'Publication',
+    pv:e=>({t:e.title, o:[e.publisher,e.link].filter(Boolean).join(' · '), w:e.date, b:''}) },
+  references: { key:'references', label:'References', add:'Add reference',
+    fields:[['name','Name'],['relationship','Relationship'],['contact','Contact']],
+    blank:()=>({id:uid('ref'),name:'',relationship:'',contact:''}),
+    title:e=>e.name||'Reference',
+    pv:e=>({t:e.name, o:[e.relationship,e.contact].filter(Boolean).join(' · '), w:'', b:''}) },
+};
+const DYN_ORDER = ['education','projects','certifications','volunteer','awards','languages','publications','references'];
+function dynRange(e){ var s=e.start||'', en=e.present?'Present':(e.end||''); return s&&en?(s+' — '+en):(s||en||''); }
+function dynRemoved(type){ return (resumeState.customize.removedSections||[]).indexOf(type)>=0; }
+
+/* ---- editor: render one dynamic section's entry blocks (mirrors .exp-block) ---- */
+function renderDynSection(type){
+  const cfg=DYN[type], arr=resumeState[cfg.key]||[], container=$('#dyn-blocks-'+type);
+  if(!container) return;
+  container.innerHTML='';
+  arr.forEach((entry, idx)=>{
+    const block=document.createElement('div');
+    block.className='exp-block'; block.setAttribute('role','listitem'); block.setAttribute('draggable','true'); block.dataset.dynId=entry.id; block.dataset.dynType=type;
+    const head=document.createElement('div'); head.className='exp-block-head';
+    head.innerHTML='<button type="button" class="drag-handle" aria-label="Drag to reorder" title="Drag to reorder"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="5" cy="3" r="1" fill="currentColor"/><circle cx="9" cy="3" r="1" fill="currentColor"/><circle cx="5" cy="7" r="1" fill="currentColor"/><circle cx="9" cy="7" r="1" fill="currentColor"/><circle cx="5" cy="11" r="1" fill="currentColor"/><circle cx="9" cy="11" r="1" fill="currentColor"/></svg></button><b>'+escapeHtml(cfg.title(entry))+'</b><button type="button" class="remove-block" aria-label="Remove this entry" data-remove-dyn="'+escapeHtml(entry.id)+'"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>';
+    block.appendChild(head);
+    const fw=document.createElement('div'); fw.innerHTML=dynFieldsHtml(type, entry);
+    while(fw.firstChild) block.appendChild(fw.firstChild);
+    // bind inputs
+    $$('[data-dyn-field]', block).forEach(input=>{
+      input.addEventListener('input', ()=>{
+        const f=input.dataset.dynField;
+        entry[f]=sanitize(input.value, {multiline: input.tagName==='TEXTAREA'});
+        const bEl=head.querySelector('b'); if(bEl) bEl.textContent=cfg.title(entry);
+        updatePreview(); saveResumeState();
+      });
+    });
+    const pres=block.querySelector('[data-dyn-present]');
+    if(pres){ pres.addEventListener('change', ()=>{ entry.present=pres.checked; const endEl=block.querySelector('[data-dyn-field="end"]'); if(endEl) endEl.disabled=pres.checked; updatePreview(); saveResumeState(); }); }
+    // drag reorder within section
+    block.addEventListener('dragstart',e=>{ block.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain','dyn:'+type+':'+entry.id); });
+    block.addEventListener('dragend',()=>{ block.classList.remove('dragging'); $$('.exp-block',container).forEach(b=>b.classList.remove('drag-over')); });
+    block.addEventListener('dragover',e=>{ e.preventDefault(); e.dataTransfer.dropEffect='move'; block.classList.add('drag-over'); });
+    block.addEventListener('dragleave',()=>block.classList.remove('drag-over'));
+    block.addEventListener('drop',e=>{ e.preventDefault(); block.classList.remove('drag-over'); const raw=e.dataTransfer.getData('text/plain')||''; const p=raw.split(':'); if(p[0]!=='dyn'||p[1]!==type) return; if(p[2]===entry.id) return; reorderDyn(type, p[2], entry.id); });
+    container.appendChild(block);
+  });
+  $$('[data-remove-dyn]', container).forEach(btn=>{ btn.addEventListener('click', ()=> removeDynEntry(type, btn.getAttribute('data-remove-dyn'))); });
+}
+function dynFieldsHtml(type, e){
+  const cfg=DYN[type]; let html='';
+  cfg.fields.forEach(f=>{
+    if(f[0]==='__dates'){
+      const sk=f[1], ek=f[2];
+      html+='<div class="row2"><div class="field"><label for="dyn-'+type+'-'+sk+'-'+escapeHtml(e.id)+'">Start</label><input id="dyn-'+type+'-'+sk+'-'+escapeHtml(e.id)+'" type="text" maxlength="40" data-dyn-field="'+sk+'" value="'+escapeHtml(e[sk]||'')+'" placeholder="2020" /></div>'
+        +'<div class="field"><label for="dyn-'+type+'-'+ek+'-'+escapeHtml(e.id)+'">End</label><input id="dyn-'+type+'-'+ek+'-'+escapeHtml(e.id)+'" type="text" maxlength="40" data-dyn-field="'+ek+'" value="'+escapeHtml(e[ek]||'')+'" placeholder="2024" '+(e.present?'disabled':'')+' /></div></div>'
+        +'<label class="rf-present" style="display:inline-flex;align-items:center;gap:7px;font-size:.8rem;color:var(--ink-2);margin:0 0 10px;cursor:pointer"><input type="checkbox" data-dyn-present style="width:auto" '+(e.present?'checked':'')+'/> Currently here (Present)</label>';
+      return;
+    }
+    const key=f[0], label=f[1], area=(f[2]==='area'||f[3]==='area');
+    const ph = (f[3]&&/^ph:/.test(f[3]))?f[3].slice(3):(f[2]&&/^ph:/.test(f[2])?f[2].slice(3):'');
+    const id='dyn-'+type+'-'+key+'-'+e.id;
+    html+='<div class="field"><label for="'+escapeHtml(id)+'">'+escapeHtml(label)+'</label>'
+      + (area
+          ? '<textarea id="'+escapeHtml(id)+'" rows="3" maxlength="1000" data-dyn-field="'+key+'">'+escapeHtml(e[key]||'')+'</textarea>'
+          : '<input id="'+escapeHtml(id)+'" type="text" maxlength="200" data-dyn-field="'+key+'" value="'+escapeHtml(e[key]||'')+'"'+(ph?' placeholder="'+escapeHtml(ph)+'"':'')+' />')
+      + '</div>';
+  });
+  return html;
+}
+function addDynEntry(type){
+  const cfg=DYN[type]; resumeState[cfg.key]=resumeState[cfg.key]||[];
+  const ne=cfg.blank(); resumeState[cfg.key].push(ne);
+  renderDynSection(type); updatePreview(); saveResumeState();
+  setTimeout(()=>{ const inp=$('#dyn-blocks-'+type+' .exp-block:last-child input,#dyn-blocks-'+type+' .exp-block:last-child textarea'); inp&&inp.focus(); inp&&inp.scrollIntoView({behavior:'smooth',block:'center'}); },50);
+}
+function removeDynEntry(type, id){
+  const cfg=DYN[type]; resumeState[cfg.key]=(resumeState[cfg.key]||[]).filter(x=>x.id!==id);
+  renderDynSection(type); updatePreview(); saveResumeState();
+}
+function reorderDyn(type, fromId, toId){
+  const arr=resumeState[DYN[type].key]||[]; const fi=arr.findIndex(x=>x.id===fromId), ti=arr.findIndex(x=>x.id===toId);
+  if(fi<0||ti<0) return; const [m]=arr.splice(fi,1); arr.splice(ti,0,m);
+  renderDynSection(type); updatePreview(); saveResumeState();
+}
+function removeDynSectionType(type){
+  const rs=resumeState.customize.removedSections; if(rs.indexOf(type)<0) rs.push(type);
+  renderAllDynEditors(); updatePreview(); saveResumeState();
+}
+function restoreDynSectionType(type){
+  resumeState.customize.removedSections=resumeState.customize.removedSections.filter(t=>t!==type);
+  renderAllDynEditors(); updatePreview(); saveResumeState();
+}
+
+/* ---- editor: build the accordion shells for every dynamic section ---- */
+function renderAllDynEditors(){
+  const host=$('#dynSections'); if(!host) return;
+  host.innerHTML='';
+  DYN_ORDER.forEach(type=>{
+    if(dynRemoved(type)) return;
+    const cfg=DYN[type];
+    const sec=document.createElement('div'); sec.className='rza-sec'; sec.dataset.rzaSec=type; sec.dataset.rzaOpen='0';
+    const head=document.createElement('button'); head.type='button'; head.className='rza-head'; head.setAttribute('aria-expanded','false');
+    head.innerHTML='<span class="rza-dot"></span><span class="rza-title">'+escapeHtml(cfg.label)+'</span><span class="rza-meta">'+((resumeState[cfg.key]||[]).length||'')+'</span><span class="rza-secx" role="button" tabindex="0" aria-label="Remove section" title="Remove section" style="margin-left:6px;color:var(--ink-3)">✕</span><svg class="rza-chev" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    head.addEventListener('click',e=>{ if(e.target.closest('.rza-secx')) return; const open=sec.dataset.rzaOpen==='1'; sec.dataset.rzaOpen=open?'0':'1'; head.setAttribute('aria-expanded',String(!open)); });
+    const xbtn=head.querySelector('.rza-secx');
+    xbtn.addEventListener('click',ev=>{ ev.stopPropagation(); if(confirm('Remove the "'+cfg.label+'" section? You can restore it below.')) removeDynSectionType(type); });
+    xbtn.addEventListener('keydown',ev=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); xbtn.click(); } });
+    sec.appendChild(head);
+    const body=document.createElement('div'); body.className='rza-body';
+    const blocks=document.createElement('div'); blocks.id='dyn-blocks-'+type; blocks.setAttribute('role','list');
+    body.appendChild(blocks);
+    const add=document.createElement('button'); add.type='button'; add.className='add-block-btn'; add.innerHTML='<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg> '+escapeHtml(cfg.add);
+    add.addEventListener('click',()=>{ sec.dataset.rzaOpen='1'; head.setAttribute('aria-expanded','true'); addDynEntry(type); });
+    body.appendChild(add);
+    sec.appendChild(body);
+    host.appendChild(sec);
+    renderDynSection(type);
+  });
+  // restore bar
+  const removed=(resumeState.customize.removedSections||[]).filter(t=>DYN[t]);
+  if(removed.length){
+    const bar=document.createElement('div'); bar.className='sectionmenu';
+    bar.innerHTML='<h3 style="font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:9px">Removed sections</h3>';
+    const chips=document.createElement('div'); chips.style.cssText='display:flex;flex-wrap:wrap;gap:8px';
+    removed.forEach(type=>{ const c=document.createElement('button'); c.type='button'; c.className='tpill'; c.style.borderStyle='dashed'; c.textContent='+ '+DYN[type].label; c.addEventListener('click',()=>restoreDynSectionType(type)); chips.appendChild(c); });
+    bar.appendChild(chips); host.appendChild(bar);
+  }
+}
+
+/* ---- preview: render every dynamic section using the .item vocabulary ---- */
+function renderDynPreview(){
+  const pv=$('#resumePreview'); if(!pv) return;
+  DYN_ORDER.forEach(type=>{
+    const cfg=DYN[type];
+    let sec=pv.querySelector('.rp-section[data-section="'+type+'"]');
+    const entries=(resumeState[cfg.key]||[]).filter(e=>Object.keys(e).some(k=>k[0]!=='_'&&k!=='id'&&k!=='present'&&String(e[k]||'').trim()));
+    if(dynRemoved(type) || !entries.length){ if(sec) sec.remove(); return; }
+    if(!sec){ sec=document.createElement('div'); sec.className='rp-section'; sec.dataset.section=type; pv.appendChild(sec); }
+    let html='<h3>'+escapeHtml(cfg.label)+'</h3>';
+    entries.forEach(e=>{
+      const p=cfg.pv(e);
+      html+='<div class="item"><div class="item-head"><b>'+escapeHtml(p.t||'')+'</b>'+(p.w?'<time>'+escapeHtml(p.w)+'</time>':'')+'</div>';
+      if(p.o) html+='<div class="org">'+escapeHtml(p.o)+'</div>';
+      const bl=(p.b||'').split('\n').map(s=>s.trim()).filter(Boolean);
+      if(bl.length){ html+='<ul>'+bl.map(l=>'<li>'+escapeHtml(l.replace(/^[-•·*]\s*/,''))+'</li>').join('')+'</ul>'; }
+      html+='</div>';
+    });
+    sec.innerHTML=html;
+  });
+}
+
 function initCustomizer(){
   const c = resumeState.customize;
   const accent = $('#rpcAccent'), font = $('#rpcFont'), density = $('#rpcDensity'), secWrap = $('#rpcSections');
@@ -6269,7 +6758,7 @@ $$('.tpill').forEach(pill => {
   pill.addEventListener('click', () => {
     const tpl = pill.dataset.tpl;
     // Gate every non-Modern template for Free plan
-    const PRO_TEMPLATES = ['classic','bold','minimal','compact','technical','elegant','colorful','professional','creative'];
+    const PRO_TEMPLATES = ['classic','bold','minimal','compact','technical','elegant','colorful','professional','creative','executive-black'];
     if(PRO_TEMPLATES.includes(tpl) && !canUse('pro')){
       const niceName = tpl.charAt(0).toUpperCase() + tpl.slice(1);
       showUpgradeModal(niceName + ' template', 'pro');
@@ -7127,6 +7616,7 @@ function renderAtsResults(r){
       score: r.score, jdTitle: r.jdTitle, jdSnippet: ($('#jdInput')?.value || '').slice(0, 80),
       verdict: r.verdict, suggestions: r.suggestions,
       matchedCount: r.matchedCount, missingCount: r.missingCount,
+      missingTerms: (r.missing || []).slice(0, 16).map(m => m.term),
       titleScore: r.titleScore, similarity: r.similarity,
       yearsRequired: r.yearsRequired, yearsCandidate: r.yearsCandidate,
       timestamp: r.timestamp
@@ -10570,6 +11060,7 @@ $('#docPreviewOpenBtn')?.addEventListener('click', () => {
 
 /* "View full report" → ATS panel within dashboard */
 $('#atsViewReportBtn')?.addEventListener('click', () => {
+  if(window.__openAtsDrawer){ window.__openAtsDrawer(); return; }
   if(parseHash().name !== 'dashboard') location.hash = 'dashboard';
   showDashPanel('ats');
 });
@@ -10779,52 +11270,234 @@ window.addEventListener('storage', (e) => {
       .some(sel => { const m = $(sel); return m && !m.hidden; });
     if(!modalsOpen) setDhState('home');
   });
-  /* Social proof popups — DESIGN PREVIEW ONLY · placeholder data, no real users or quotes.
-     Wire to real cf-admin-events before launch (see cfApi.getAdminEvents()). */
-  const proofContainer = $('#dhSocialProof');
-  const proofTemplates = [
-    { type:'activity', label:'A', title:'Customer A just exported a résumé', sub:'Plan: <strong>Pro</strong>' },
-    { type:'activity', label:'B', title:'Customer B just upgraded',          sub:'Plan: <strong>Pro</strong>' },
-    { type:'activity', label:'C', title:'Customer C signed up',              sub:'Plan: <strong>Free</strong>' },
-    { type:'activity', label:'D', title:'Customer D completed checkout',     sub:'Plan: <strong>Business</strong>' },
-    { type:'activity', label:'E', title:'Customer E edited a PDF',           sub:'Used: <strong>AI redact</strong>' },
-    { type:'activity', label:'F', title:'Customer F downloaded a résumé',    sub:'Plan: <strong>Pro</strong>' },
-    { type:'review',   label:'G', title:'Customer G left a 5-star review',   sub:'[Review excerpt would appear here]' },
-    { type:'review',   label:'H', title:'Customer H left a 5-star review',   sub:'[Review excerpt would appear here]' },
-  ];
-  const proofQueue = [...proofTemplates].sort(() => Math.random() - 0.5);
-  let proofIdx = 0;
-  function renderProof(){
-    if(!proofContainer) return;
-    if(parseHash().name !== 'home') return;  // only on home page
-    const d = proofQueue[proofIdx];
-    proofIdx = (proofIdx + 1) % proofQueue.length;
-    const el = document.createElement('div');
-    el.className = 'dh-social-popup';
-    const ago = d.type === 'review' ? `${Math.floor(Math.random()*24)+1} hours ago` : `${Math.floor(Math.random()*12)+1} minutes ago`;
-    const starsBlock = d.type === 'review' ? '<div class="dh-popup-stars">★★★★★</div>' : '';
-    el.innerHTML = `
-      <span class="dh-popup-demo-tag">Demo</span>
-      <div class="dh-popup-avatar" aria-hidden="true">${d.label}</div>
-      <div class="dh-popup-body">
-        ${starsBlock}
-        <div class="dh-popup-title">${d.title}</div>
-        <div class="dh-popup-subtitle">${d.sub}</div>
-        <div class="dh-popup-time">${ago}</div>
-      </div>
-    `;
-    proofContainer.appendChild(el);
-    setTimeout(() => {
-      el.classList.add('dh-hide');
-      setTimeout(() => el.remove(), 500);
-    }, 5000);
-  }
-  setTimeout(() => {
-    renderProof();
-    setInterval(renderProof, 6500);
-  }, 2000);
+  /* Social proof activity popups removed — they were placeholder/demo data, not real users. */
 })();
 
+})();
+</script>
+
+<!-- ATS report drawer (Phase 2 port) -->
+<div class="rzd-scrim" id="rzdScrim"></div>
+<aside class="rzd" id="rzdDrawer" role="dialog" aria-modal="true" aria-label="ATS report" aria-hidden="true">
+  <div class="rzd-head">
+    <div class="t"><h2>ATS report</h2><div class="tg" id="rzdTarget"></div></div>
+    <button class="rzd-x" id="rzdClose" type="button" aria-label="Close report"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+  <div class="rzd-body" id="rzdBody"></div>
+  <div class="rzd-foot">
+    <button class="b sec" id="rzdRerun" type="button">Re-run check</button>
+    <button class="b pri" id="rzdEdit" type="button">Open in résumé builder</button>
+  </div>
+</aside>
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var drawer=$('#rzdDrawer'), scrim=$('#rzdScrim'), body=$('#rzdBody');
+  if(!drawer) return;
+  var ICON={
+    high:'<svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M7 11.5v.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    medium:'<svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M7 1v3M7 10v3M1 7h3M10 7h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+    low:'<svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M3 7l3 3 5-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  };
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+  function tone(v){return v>=80?'hi':(v>=55?'':'lo');}
+  function readLast(){try{var raw=localStorage.getItem('cf-ats-last');return raw?JSON.parse(raw):null;}catch(e){return null;}}
+  function render(){
+    var r=readLast();
+    if(!r||typeof r.score!=='number'){
+      $('#rzdTarget').textContent='No checks yet';
+      body.innerHTML='<div class="rzd-empty">Run an ATS check in the résumé builder to see your full report here.</div>';
+      return;
+    }
+    $('#rzdTarget').textContent=r.jdTitle?('For: '+r.jdTitle):'Last ATS check';
+    var total=(r.matchedCount||0)+(r.missingCount||0);
+    var kwPct=total?Math.round((r.matchedCount||0)/total*100):0;
+    var expPct=r.yearsRequired?Math.min(100,Math.round(((r.yearsCandidate||0)/r.yearsRequired)*100)):100;
+    var rows=[['Keyword match',kwPct,(r.matchedCount||0)+' of '+total+' terms']];
+    if(typeof r.titleScore==='number') rows.push(['Title match',r.titleScore,r.titleScore+'%']);
+    if(typeof r.similarity==='number') rows.push(['Content similarity',r.similarity,r.similarity+'%']);
+    if(r.yearsRequired) rows.push(['Experience',expPct,(r.yearsCandidate||0)+' / '+r.yearsRequired+' yrs']);
+    var brk=rows.map(function(x){return '<div class="rzd-brow"><span class="n">'+esc(x[0])+'</span><span class="v">'+esc(x[2])+'</span><div class="rzd-bar"><i class="'+tone(x[1])+'" style="width:'+x[1]+'%"></i></div></div>';}).join('');
+    var sugs=(r.suggestions||[]);
+    var recs=sugs.length?sugs.map(function(s){var sev=s.severity||'medium';return '<div class="rzd-sug sev-'+esc(sev)+'"><div class="si">'+(ICON[sev]||ICON.medium)+'</div><div><b>'+esc(s.title)+'</b><p>'+esc(s.body)+'</p></div></div>';}).join(''):'<div class="rzd-sug sev-low"><div class="si">'+ICON.low+'</div><div><b>No issues found</b><p>Your résumé strongly aligns with this role.</p></div></div>';
+    var miss=(r.missingTerms||[]);
+    var kw=miss.length?('<div class="rzd-kw">'+miss.map(function(t){return '<span class="chip">'+esc(t)+'</span>';}).join('')+'</div><div class="rzd-kwnote">Found in the job description but not your résumé.</div>'):'<div class="rzd-kwnote">No missing keywords — great coverage.</div>';
+    body.innerHTML=''+
+      '<div class="rzd-hero"><div class="rzd-ring" style="--rzd-score:'+r.score+'"><span class="m"></span><b>'+esc(r.score)+'</b></div>'+
+        '<div class="rzd-verdict"><b>'+esc(r.verdict||'')+'</b><span>'+(r.jdSnippet?('JD: '+esc(r.jdSnippet)):'Last check')+'</span></div></div>'+
+      '<div><div class="rzd-lbl">Score breakdown</div><div class="rzd-brk">'+brk+'</div></div>'+
+      '<div><div class="rzd-lbl">Recommendations · '+sugs.length+'</div><div class="rzd-recs">'+recs+'</div></div>'+
+      '<div><div class="rzd-lbl">Missing keywords</div>'+kw+'</div>';
+  }
+  function open(){render();drawer.classList.add('open');scrim.classList.add('show');drawer.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';setTimeout(function(){var c=$('#rzdClose');if(c)c.focus();},60);}
+  function close(){drawer.classList.remove('open');scrim.classList.remove('show');drawer.setAttribute('aria-hidden','true');document.body.style.overflow='';}
+  window.__openAtsDrawer=open;
+  $('#rzdClose').onclick=close; scrim.onclick=close;
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&drawer.classList.contains('open'))close();});
+  $('#rzdRerun').onclick=function(){close();location.hash='resume';};
+  $('#rzdEdit').onclick=function(){close();location.hash='resume';};
+})();
+</script>
+
+<script>
+/* Hero résumé-preview: animate a weak→strong AI rewrite while the ATS score climbs. */
+(function(){
+  var num=document.getElementById('dhAtsNum'), ring=document.getElementById('dhRing'),
+      bullet=document.getElementById('dhBullet'), label=document.getElementById('dhAtsLabel');
+  // "Explore tools" scrolls to the on-page features section (no SPA route change)
+  var explore=document.getElementById('dhExploreBtn');
+  if(explore){ explore.addEventListener('click', function(){
+    var t=document.getElementById('page-home-features');
+    if(t) t.scrollIntoView({behavior:'smooth', block:'start'});
+  }); }
+  if(!num||!ring||!bullet) return;
+  ring.style.setProperty('--p','94%');
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var lines=[
+    {t:"Managed the team's social accounts", s:71, l:"Needs work"},
+    {t:"Grew social reach 3.2\u00d7 in six months", s:88, l:"Good"},
+    {t:"Grew activation 38% by redesigning onboarding", s:94, l:"Strong"}
+  ];
+  var i=0;
+  function tick(t){var c=parseInt(num.textContent,10)||0,st=c<t?1:-1;var iv=setInterval(function(){c+=st;num.textContent=c;ring.style.setProperty('--p',c+'%');if(c===t)clearInterval(iv);},20);}
+  function cyc(){var L=lines[i%lines.length];bullet.style.opacity=0;setTimeout(function(){bullet.textContent=L.t;bullet.style.opacity=1;if(label)label.textContent=L.l;tick(L.s);},380);i++;}
+  setInterval(cyc,3400);
+})();
+</script>
+
+<script>
+/* In-editor ATS trigger — shows last real check, opens the existing drawer. */
+(function(){
+  var bar=document.getElementById('rzbAtsBar'); if(!bar) return;
+  function paint(){
+    var r=null; try{r=JSON.parse(localStorage.getItem('cf-ats-last')||'null');}catch(e){}
+    if(r && typeof r.score==='number'){
+      var s=document.getElementById('rzbScore'), ring=document.getElementById('rzbRing'),
+          h=document.getElementById('rzbHeadline'), sub=document.getElementById('rzbSub');
+      if(s) s.textContent=r.score;
+      if(ring) ring.style.setProperty('--rzb-score', r.score);
+      if(h) h.textContent=r.verdict||('ATS match '+r.score);
+      if(sub) sub.textContent=r.missingCount?(r.missingCount+' keyword'+(r.missingCount===1?'':'s')+' to add'):'Open your full report';
+    }
+  }
+  bar.addEventListener('click', function(){
+    if(window.__openAtsDrawer){ window.__openAtsDrawer(); return; }
+    var jd=document.getElementById('jdInput'); if(jd) jd.scrollIntoView({behavior:'smooth', block:'center'});
+  });
+  var chk=document.getElementById('checkAts'); if(chk) chk.addEventListener('click', function(){ setTimeout(paint, 150); });
+  paint();
+})();
+</script>
+
+<script>
+/* Builder accordion: collapse/expand + live completion dots (real form state). */
+(function(){
+  var acc=document.getElementById('rzaAcc'); if(!acc) return;
+  acc.querySelectorAll('.rza-head').forEach(function(h){
+    h.addEventListener('click', function(){
+      var sec=h.closest('.rza-sec'); var open=sec.getAttribute('data-rza-open')==='1';
+      sec.setAttribute('data-rza-open', open?'0':'1');
+      h.setAttribute('aria-expanded', String(!open));
+    });
+  });
+  function val(sel){var e=document.querySelector(sel);return e&&e.value?e.value.trim():'';}
+  function setDot(key,have,total){
+    var sec=acc.querySelector('[data-rza-sec="'+key+'"]'); if(!sec) return;
+    var dot=sec.querySelector('.rza-dot'), meta=sec.querySelector('.rza-meta');
+    if(dot){dot.classList.remove('done','partial'); if(have>=total)dot.classList.add('done'); else if(have>0)dot.classList.add('partial');}
+    if(meta) meta.textContent = have>=total?'Complete':(have>0?'In progress':'Empty');
+  }
+  function recompute(){
+    setDot('personal', (val('#rf-name')?1:0)+(val('#rf-email')?1:0)+(val('#rf-title')?1:0), 3);
+    setDot('summary', val('#rf-summary')?1:0, 1);
+    var exp=document.querySelectorAll('#expBlocks > *').length;
+    setDot('experience', exp>0?1:0, 1);
+    var chipBox=document.getElementById('skillChipInput');
+    var chips=chipBox?Math.max(0, chipBox.children.length-1):0;
+    setDot('skills', chips>0?1:0, 1);
+    setDot('education', val('#rf-education')?1:0, 1);
+  }
+  document.getElementById('resumeForm')?.addEventListener('input', recompute);
+  setInterval(recompute, 1500);   // catches chip/experience add/remove
+  setTimeout(recompute, 400);
+})();
+</script>
+
+<!-- Template gallery overlay -->
+<div class="rzg-scrim" id="rzgScrim"></div>
+<div class="rzg" id="rzgGallery" role="dialog" aria-modal="true" aria-label="Template gallery">
+  <div class="rzg-top">
+    <div><h2>Choose a template</h2><p>Your content stays the same — switching only changes the design. Scores reflect each template's ATS-friendliness, not your résumé's score.</p></div>
+    <button class="rzg-x" id="rzgClose" type="button" aria-label="Close gallery">✕</button>
+  </div>
+  <div class="rzg-controls">
+    <div class="rzg-filters" id="rzgFilters"></div>
+    <div class="rzg-search"><input type="text" id="rzgSearch" placeholder="Search templates…" aria-label="Search templates"></div>
+  </div>
+  <div class="rzg-grid" id="rzgGrid"></div>
+</div>
+<script>
+/* Template gallery — cards render the user's real content in each style; selecting reuses the live engine. */
+(function(){
+  var openBtn=document.getElementById('rzgOpen'), gal=document.getElementById('rzgGallery'), scrim=document.getElementById('rzgScrim'),
+      grid=document.getElementById('rzgGrid'), filters=document.getElementById('rzgFilters'), search=document.getElementById('rzgSearch');
+  if(!gal||!grid) return;
+  var TPL=[
+    {id:'modern-ats',name:'Modern ATS',cat:'ats',ats:98,prem:false,badge:'Popular'},
+    {id:'professional-ats',name:'Professional ATS',cat:'ats',ats:97,prem:false},
+    {id:'corporate-ats',name:'Corporate ATS',cat:'ats',ats:96,prem:false},
+    {id:'minimal-gray',name:'Minimal Gray',cat:'minimal',ats:96,prem:false},
+    {id:'minimal',name:'Minimal',cat:'minimal',ats:96,prem:true},
+    {id:'classic',name:'Classic White',cat:'minimal',ats:95,prem:true},
+    {id:'compact',name:'Compact',cat:'minimal',ats:94,prem:true},
+    {id:'technical',name:'Technical',cat:'technical',ats:94,prem:true},
+    {id:'modern',name:'Modern',cat:'modern',ats:92,prem:false},
+    {id:'executive-black',name:'Executive Black',cat:'executive',ats:92,prem:true,badge:'Premium'},
+    {id:'elegant',name:'Elegant',cat:'executive',ats:91,prem:true},
+    {id:'horizon',name:'Horizon',cat:'modern',ats:90,prem:false,badge:'New'},
+    {id:'professional',name:'Professional',cat:'modern',ats:90,prem:true},
+    {id:'bold',name:'Bold',cat:'modern',ats:88,prem:true},
+    {id:'colorful',name:'Colorful',cat:'creative',ats:84,prem:true},
+    {id:'creative',name:'Creative',cat:'creative',ats:82,prem:true}
+  ];
+  var CATS=[['all','All'],['ats','ATS'],['modern','Modern'],['executive','Executive'],['technical','Technical'],['creative','Creative'],['minimal','Minimal']];
+  var activeCat='all', q='';
+  filters.innerHTML=CATS.map(function(c,i){return '<button type="button" class="rzg-fpill" data-cat="'+c[0]+'" aria-pressed="'+(i===0?'true':'false')+'">'+c[1]+'</button>';}).join('');
+  filters.addEventListener('click',function(e){var b=e.target.closest('.rzg-fpill'); if(!b)return; activeCat=b.dataset.cat; filters.querySelectorAll('.rzg-fpill').forEach(function(p){p.setAttribute('aria-pressed', p===b?'true':'false');}); render();});
+  search.addEventListener('input',function(){q=search.value.trim().toLowerCase(); render();});
+  function innerHTML(){ var p=document.getElementById('resumePreview'); return p?p.innerHTML.replace(/\sid="[^"]*"/g,''):''; }
+  function currentTpl(){ var p=document.querySelector('.tpill[aria-pressed="true"]'); return (p&&p.dataset.tpl)||'modern'; }
+  function render(){
+    var inner=innerHTML(), cur=currentTpl();
+    var list=TPL.filter(function(t){
+      if(activeCat!=='all'&&t.cat!==activeCat) return false;
+      if(q&&t.name.toLowerCase().indexOf(q)<0&&t.cat.indexOf(q)<0) return false;
+      return true;
+    });
+    if(!list.length){grid.innerHTML='<div class="rzg-empty">No templates match your search.</div>';return;}
+    grid.innerHTML=list.map(function(t){
+      var badge=t.badge?('<span class="rzg-badge '+(t.prem?'prem':'')+'">'+t.badge+'</span>'):'';
+      var pro=t.prem?'<span class="rzg-badge prem" style="left:auto;right:10px">Pro</span>':'';
+      return '<div class="rzg-card" data-id="'+t.id+'" data-active="'+(t.id===cur?'1':'0')+'">'+
+        '<div class="rzg-thumb">'+badge+pro+
+          '<div class="preview-doc tpl-'+t.id+'">'+inner+'</div></div>'+
+        '<div class="rzg-meta"><div><b>'+t.name+'</b><span class="cat">'+t.cat.toUpperCase()+'</span></div>'+
+          '<span class="rzg-ats"><i></i>'+t.ats+'</span></div></div>';
+    }).join('');
+  }
+  grid.addEventListener('click',function(e){
+    var card=e.target.closest('.rzg-card'); if(!card) return;
+    var id=card.dataset.id;
+    var pill=document.querySelector('.tpill[data-tpl="'+id+'"]');
+    if(pill){ pill.click(); }   // reuses the live engine + PRO gating + save
+    // if it was a locked Pro template, the engine shows the upgrade modal and won't switch
+    if(currentTpl()===id){ close(); } else { close(); }
+  });
+  function open(){ render(); gal.classList.add('open'); scrim.classList.add('show'); document.body.style.overflow='hidden'; }
+  function close(){ gal.classList.remove('open'); scrim.classList.remove('show'); document.body.style.overflow=''; }
+  if(openBtn) openBtn.addEventListener('click', open);
+  document.getElementById('rzgClose').onclick=close; scrim.onclick=close;
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&gal.classList.contains('open'))close(); });
 })();
 </script>
 
