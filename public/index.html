@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>Resumry AI — Build Job-Winning Resumes & Cover Letters with AI</title>
+<title>Resumry AI | AI Resume Builder & Cover Letter Generator</title>
 <meta name="description" content="Create professional resumes, tailored cover letters, and edit PDF/file documents in minutes with Resumry AI." />
 <meta name="theme-color" content="#FFF7EC" />
 <!-- SEO / social sharing. NOTE: replace https://resumry.com with your real domain,
@@ -14,26 +14,49 @@
 <meta name="keywords" content="AI resume builder, cover letter generator, ATS resume checker, resume templates, PDF resume" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Resumry AI" />
-<meta property="og:title" content="Resumry AI — Build Job-Winning Resumes & Cover Letters with AI" />
+<meta property="og:title" content="Resumry AI | AI Resume Builder & Cover Letter Generator" />
 <meta property="og:description" content="Create professional resumes, tailored cover letters, and an ATS check in minutes with Resumry AI." />
 <meta property="og:url" content="https://resumry.com/" />
 <meta property="og:image" content="https://resumry.com/og-cover.png" />
 <meta property="og:image:alt" content="Resumry AI resume builder" />
 <meta property="og:locale" content="en_US" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Resumry AI — Build Job-Winning Resumes & Cover Letters with AI" />
+<meta name="twitter:title" content="Resumry AI | AI Resume Builder & Cover Letter Generator" />
 <meta name="twitter:description" content="Create professional resumes, tailored cover letters, and an ATS check in minutes with Resumry AI." />
 <meta name="twitter:image" content="https://resumry.com/og-cover.png" />
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Resumry AI",
-  "applicationCategory": "BusinessApplication",
-  "operatingSystem": "Web",
-  "url": "https://resumry.com/",
-  "description": "AI resume builder, cover-letter generator, and ATS resume checker.",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://resumry.com/#organization",
+      "name": "Resumry AI",
+      "alternateName": "Resumry",
+      "url": "https://resumry.com/",
+      "logo": "https://resumry.com/logo.png",
+      "description": "Resumry AI is an AI-powered resume builder, cover letter generator, and ATS resume checker."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://resumry.com/#website",
+      "name": "Resumry AI",
+      "alternateName": "Resumry",
+      "url": "https://resumry.com/",
+      "publisher": { "@id": "https://resumry.com/#organization" }
+    },
+    {
+      "@type": "WebApplication",
+      "name": "Resumry AI",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "url": "https://resumry.com/",
+      "description": "AI resume builder, cover-letter generator, and ATS resume checker. Build ATS-ready resumes and tailored cover letters in minutes.",
+      "featureList": ["AI resume builder", "AI cover letter generator", "ATS resume checker", "Resume templates", "PDF and Word export"],
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "publisher": { "@id": "https://resumry.com/#organization" }
+    }
+  ]
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -4940,7 +4963,7 @@ $('#themeToggle')?.addEventListener('click', toggleTheme);
 /* ───────────────────── ROUTER ───────────────────── */
 const PAGES = ['home','resume','cover','tools','pricing','dashboard','auth','faq','contact','privacy','terms'];
 const PAGE_TITLES = {
-  home:'Resumry AI — Build Job-Winning Resumes & Cover Letters with AI',
+  home:'Resumry AI | AI Resume Builder & Cover Letter Generator',
   resume:'Resume Builder · Resumry AI',
   cover:'Cover Letter Builder · Resumry AI',
   tools:'AI PDF & File Tools · Resumry AI',
